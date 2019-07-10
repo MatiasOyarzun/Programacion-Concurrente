@@ -1,8 +1,21 @@
-package TPFinalConcurrente;
+package tpfinalconcurrente;
 
-import Clases.*;
+import clases.Tienda;
+import clases.Terminal;
+import clases.CajaTienda;
+import clases.Guardia;
+import clases.PuestoAtencion;
+import clases.Tren;
+import clases.Aerolinea;
+import clases.Pasajero;
+import clases.Aeropuerto;
+import clases.ControlDia;
+import clases.Reserva;
+
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -59,11 +72,12 @@ public class Main {
         }
     }
     
-    public static void crearPasajeros(){
+    public static void crearPasajeros(Aeropuerto viajeBonito){
         int indiceAerolinea, horaViaje, indiceTerminal, indicePuesto, puesto;
         Aerolinea aerolineaPasajero;
         Terminal terminalPasajero;
-        for (int i = 0; i < CANTPASAJEROS; i++) {
+        int i = 0;
+        while (true) {
             indiceAerolinea = NUMRANDOM.nextInt(CANTAEROLINEAS);
             aerolineaPasajero = AEROLINEAS[indiceAerolinea];
             horaViaje = NUMRANDOM.nextInt(24);
@@ -72,9 +86,15 @@ public class Main {
             indicePuesto = NUMRANDOM.nextInt(CANTPUESTOSTERMINAL);
             puesto = (terminalPasajero.getPuestos())[indicePuesto];
             Reserva nuevaReserva = new Reserva(aerolineaPasajero, horaViaje, terminalPasajero, puesto);
-            Pasajero nuevoPasajero = new Pasajero((i+1), "Pasajero: "+(i+1), nuevaReserva);
+            Pasajero nuevoPasajero = new Pasajero((i+1), "Pasajero: "+(i+1), nuevaReserva, viajeBonito);
             Thread pasajero = new Thread(nuevoPasajero, "Pasajero: "+(i+1));
             pasajero.start();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            i++;
         }
     }
 
@@ -84,10 +104,10 @@ public class Main {
         Tren trenInterno = new Tren("Tren Interno", TERMINALES);
         Thread tren = new Thread(trenInterno, "Tren Interno");
         tren.start();
-        crearPasajeros();
         Aeropuerto viajeBonito = new Aeropuerto("Viaje Bonito", TERMINALES, AEROLINEAS, trenInterno, HORA);
         ControlDia pasoDia = new ControlDia(HORA, viajeBonito);
         Thread control = new Thread(pasoDia, "Simulador Tiempo");
         control.start();
+        crearPasajeros(viajeBonito);
     }
 }

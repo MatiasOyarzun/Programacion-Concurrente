@@ -1,6 +1,6 @@
-package Clases;
+package clases;
 
-import Utiles.SoutColores;
+import utiles.SoutColores;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,21 +34,24 @@ public class Aeropuerto {
        PuestoAtencion puesto = aerolineaPasajero.getPuestoAtencion();
         while(!this.esHoraAtencion){
            try {
+               System.out.println("\t\t\t"+SoutColores.GREEN+"El pasajero: "+nuevoPasajero.getNombre()+" esta ESPERANDO horario atencion...");
                this.wait();
            } catch (InterruptedException ex) {
                Logger.getLogger(Aeropuerto.class.getName()).log(Level.SEVERE, null, ex);
            }
         }
-        System.out.println("\t\t\t"+SoutColores.GREEN+"El pasajero: "+nuevoPasajero.getNombre()+" fue atendido en el aeropuerto...");
+        System.out.println("\t\t\t"+SoutColores.GREEN+"El pasajero: "+nuevoPasajero.getNombre()+" INGRESO al puesto de informes del aeropuerto...");
     }
     
     public synchronized void comenzarHorarioAtencion(){
+        System.out.println("\t"+SoutColores.RED+"EL AEROPUERTO COMENZO SU HORARIO DE ATENCION...");
         this.esHoraAtencion = true;
         this.notifyAll();
     }
     
     public synchronized void terminarHorarioAtencion(){
         this.esHoraAtencion = false;
+        System.out.println("\t"+SoutColores.RED+"EL AEROPUERTO FINALIZO SU HORARIO DE ATENCION...");
     }
 
     public Aerolinea[] getAerolineas() {

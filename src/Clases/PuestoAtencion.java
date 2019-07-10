@@ -1,7 +1,10 @@
-package Clases;
+package clases;
 
-import Utiles.SoutColores;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+import utiles.SoutColores;
 
 /**
  *
@@ -10,8 +13,11 @@ import java.util.concurrent.Semaphore;
 public class PuestoAtencion {
 
     private static final int MAXPUESTOATENCION = 10;
-    private Semaphore puestoVacio = new Semaphore(MAXPUESTOATENCION, true);
-    private Semaphore mutex = new Semaphore(1);
+    private int cantActualPuesto = 0;
+    private final Semaphore fila = new Semaphore(MAXPUESTOATENCION, true);
+    private final Semaphore mutex = new Semaphore(1);
+    private final Lock lock = new ReentrantLock(true);
+    private final Condition guardiaPuesto = lock.newCondition();
     private Guardia guardia;
     private String nombre;
 
@@ -22,7 +28,7 @@ public class PuestoAtencion {
 
     public void entrarFila(Pasajero pasajero) throws InterruptedException {
         System.out.println("\t\t\t\t\t\t" + SoutColores.BLUE + "El pasajero: " + pasajero.getNombre() + " se encuentra en el hall central en espera...");
-        this.puestoVacio.acquire();
+        this.fila.acquire();
         this.mutex.acquire();
         System.out.println("\t\t\t\t\t\t" + SoutColores.BLUE + "El pasajero: " + pasajero.getNombre() + " entro a la fila el puesto de atencion...");
         this.mutex.release();
@@ -35,7 +41,7 @@ public class PuestoAtencion {
     }
 
     public void dejarPasar() {
-
+        //this.guardiaPuesto.
     }
 
     public String getNombre() {

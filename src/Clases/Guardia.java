@@ -1,4 +1,4 @@
-package Clases;
+package clases;
 
 /**
  *
@@ -23,7 +23,7 @@ public class Guardia extends Persona implements Runnable{
     @Override
     public void run(){
         while(true){
-            
+            this.puesto.dejarPasar();
         }
     }
 }

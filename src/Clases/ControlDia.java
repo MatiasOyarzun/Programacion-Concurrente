@@ -1,4 +1,4 @@
-package Clases;
+package clases;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -12,6 +12,7 @@ public class ControlDia implements Runnable{
     
     private static final int HORARIO_INICIO_ATENCION = 6;
     private static final int HORARIO_FIN_ATENCION = 22;
+    private static final int HORARIO_COMIENZO_NUEVO_DIA = 24;
     private AtomicInteger hora;
     private Aeropuerto aeropuerto;
     
@@ -24,16 +25,18 @@ public class ControlDia implements Runnable{
     public void run(){
         while(true){
             try {
-                Thread.sleep(10000);
+                Thread.sleep(1000);
             } catch (InterruptedException ex) {
                 Logger.getLogger(ControlDia.class.getName()).log(Level.SEVERE, null, ex);
             }
             this.hora.addAndGet(1);
-            if(this.hora.get() == 6){
+            if(this.hora.get() == HORARIO_INICIO_ATENCION){
+                this.aeropuerto.comenzarHorarioAtencion();
             }else{
-                if(this.hora.get() == 22){
+                if(this.hora.get() == HORARIO_FIN_ATENCION){
+                    this.aeropuerto.terminarHorarioAtencion();
                 }else{
-                    if(this.hora.get() == 24){
+                    if(this.hora.get() == HORARIO_COMIENZO_NUEVO_DIA){
                         this.hora.set(0);
                     }
                 }
