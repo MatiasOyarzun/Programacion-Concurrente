@@ -20,6 +20,7 @@ public class Main {
     private static final Terminal[] TERMINALES = new Terminal[CANTTERMINALES];
     private static final char[] LETRASTERMINALES = {'A', 'B', 'C'};
     private static final AtomicInteger HORA = new AtomicInteger(0);
+    private static final Random NUMRANDOM = new Random();
     
     public static void crearTerminales(){
         int numPuesto = 1;
@@ -56,17 +57,37 @@ public class Main {
             AEROLINEAS[i] = new Aerolinea(NOMBRESAEROLINEAS[i], nuevoPuesto);
         }
     }
+    
+    public static void crearPasajeros(){
+        int indiceAerolinea, horaViaje, indiceTerminal, indicePuesto, puesto;
+        Aerolinea aerolineaPasajero;
+        Terminal terminalPasajero;
+        for (int i = 0; i < CANTPASAJEROS; i++) {
+            indiceAerolinea = NUMRANDOM.nextInt(CANTAEROLINEAS);
+            aerolineaPasajero = AEROLINEAS[indiceAerolinea];
+            horaViaje = NUMRANDOM.nextInt(24);
+            indiceTerminal = NUMRANDOM.nextInt(CANTTERMINALES);
+            terminalPasajero = TERMINALES[indiceTerminal];
+            indicePuesto = NUMRANDOM.nextInt(CANTPUESTOSTERMINAL);
+            puesto = (terminalPasajero.getPuestos())[indicePuesto];
+            Reserva nuevaReserva = new Reserva(aerolineaPasajero, horaViaje, terminalPasajero, puesto);
+            Pasajero nuevoPasajero = new Pasajero((i+1), "Pasajero: "+(i+1), nuevaReserva);
+            Thread pasajero = new Thread(nuevoPasajero, "Pasajero: "+(i+1));
+            pasajero.start();
+        }
+    }
 
     public static void main(String[] args) {
         crearTerminales();
         System.out.println("");
         crearAerolineas();
         Tren trenInterno = new Tren("Tren Interno", TERMINALES);
+        Thread tren = new Thread(trenInterno, "Tren Interno");
+        tren.start();
+        crearPasajeros();
         Aeropuerto viajeBonito = new Aeropuerto("Viaje Bonito", TERMINALES, AEROLINEAS, trenInterno, HORA);
-    }
-
-    public static String[] crearNombresAerolineas() {
-        String[] arrNombresAero = {"VOLARIS", "AEROLINEAS ARG", "AIR CANADA", "CALAFIA", "LAN", "AIR QATAR", "LATAM", "AIR AZUL", "SAFARILINK", "AIR BOUTIQUE"};
-        return arrNombresAero;
+        ControlDia pasoDia = new ControlDia(HORA, viajeBonito);
+        Thread control = new Thread(pasoDia, "Simulador Tiempo");
+        control.start();
     }
 }
