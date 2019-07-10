@@ -59,6 +59,7 @@ public class Main {
 
     public static void main(String[] args) {
         crearTerminales();
+        System.out.println("");
         crearAerolineas();
         Tren trenInterno = new Tren("Tren Interno", TERMINALES);
         Aeropuerto viajeBonito = new Aeropuerto("Viaje Bonito", TERMINALES, AEROLINEAS, trenInterno, HORA);
