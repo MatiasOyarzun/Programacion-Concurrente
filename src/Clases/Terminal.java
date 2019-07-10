@@ -15,4 +15,8 @@ public class Terminal {
         this.puestosEmbarque = puestos;
         this.tienda = tienda;
     }
+    
+    public int[] getPuestos(){
+        return this.puestosEmbarque;
+    }
 }
