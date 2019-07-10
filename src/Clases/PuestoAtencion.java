@@ -21,7 +21,7 @@ public class PuestoAtencion {
         this.guardia = guardia;
     }
     
-    public void entrarFila(Pasajero pasajero){
+    public void entrarFila(Pasajero pasajero) throws InterruptedException{
         this.filaVacia.acquire();
         this.mutex.acquire();
         System.out.println("\t\t\t\t\t\t"+SoutColores.BLUE+"El pasajero: "+pasajero.getNombre()+" entro a la fila el puesto de atencion...");

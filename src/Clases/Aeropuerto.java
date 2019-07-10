@@ -40,7 +40,6 @@ public class Aeropuerto {
            }
         }
         System.out.println("\t\t\t"+SoutColores.GREEN+"El pasajero: "+nuevoPasajero.getNombre()+" fue atendido en el aeropuerto...");
-        puesto.
     }
     
     public synchronized void comenzarHorarioAtencion(){
