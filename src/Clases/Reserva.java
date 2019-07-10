@@ -18,8 +18,8 @@ public class Reserva {
         this.puestoEmbarque = puesto;
     }
     
-    public String getNombreAerolinea(){
-        return this.aerolinea.getNombreAerolinea();
+    public Aerolinea getAerolinea(){
+        return this.aerolinea;
     }
     
     public void setAerolinea(Aerolinea aerolinea){

@@ -29,5 +29,14 @@ public class Aerolinea {
         this.nombreAerolinea = nombreAerolinea;
     }
     
+    @Override
+    public boolean equals(Object obj){
+        return (this.toString().equals(obj.toString()));
+    }
+    
+    @Override
+    public String toString(){
+        return this.nombreAerolinea;
+    }
     
 }

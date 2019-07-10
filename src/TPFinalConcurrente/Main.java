@@ -1,6 +1,7 @@
 package TPFinalConcurrente;
 
 import Clases.*;
+import Utiles.SoutColores;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -52,8 +53,9 @@ public class Main {
         for (int i = 0; i < CANTAEROLINEAS; i++) {
             Guardia nuevoGuardia = new Guardia((i+1));
             Thread guardia = new Thread(nuevoGuardia);
-            guardia.start();
             PuestoAtencion nuevoPuesto = new PuestoAtencion("Puesto: "+NOMBRESAEROLINEAS[i], nuevoGuardia);
+            nuevoGuardia.setPuesto(nuevoPuesto);
+            guardia.start();
             AEROLINEAS[i] = new Aerolinea(NOMBRESAEROLINEAS[i], nuevoPuesto);
         }
     }
