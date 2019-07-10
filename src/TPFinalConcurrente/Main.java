@@ -78,6 +78,25 @@ public class Main {
             pasajero.start();
         }
     }
+    
+    public static void crearPasajeros(){
+        int indiceAerolinea, horaViaje, indiceTerminal, indicePuesto, puesto;
+        Aerolinea aerolineaPasajero;
+        Terminal terminalPasajero;
+        for (int i = 0; i < CANTPASAJEROS; i++) {
+            indiceAerolinea = NUMRANDOM.nextInt(CANTAEROLINEAS);
+            aerolineaPasajero = AEROLINEAS[indiceAerolinea];
+            horaViaje = NUMRANDOM.nextInt(24);
+            indiceTerminal = NUMRANDOM.nextInt(CANTTERMINALES);
+            terminalPasajero = TERMINALES[indiceTerminal];
+            indicePuesto = NUMRANDOM.nextInt(CANTPUESTOSTERMINAL);
+            puesto = (terminalPasajero.getPuestos())[indicePuesto];
+            Reserva nuevaReserva = new Reserva(aerolineaPasajero, horaViaje, terminalPasajero, puesto);
+            Pasajero nuevoPasajero = new Pasajero((i+1), "Pasajero: "+(i+1), nuevaReserva);
+            Thread pasajero = new Thread(nuevoPasajero, "Pasajero: "+(i+1));
+            pasajero.start();
+        }
+    }
 
     public static void main(String[] args) {
         crearTerminales();
