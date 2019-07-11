@@ -38,8 +38,12 @@ public class Pasajero extends Persona implements Runnable{
     public void run(){
         try {
             Tren trenInterno = this.aeropuerto.getTren();
-            this.aeropuerto.ingresarAeropuerto(this);
+            PuestoAtencion puesto = this.aeropuerto.ingresarAeropuerto(this);
             Thread.sleep(100);
+            puesto.entrarFilaPuesto(this);
+            puesto.entrarPuestoAtencion(this);
+            Thread.sleep(500);
+            puesto.salirPuestoAtencion(this);
         } catch (InterruptedException ex) {
             Logger.getLogger(Pasajero.class.getName()).log(Level.SEVERE, null, ex);
         }

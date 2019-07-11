@@ -16,19 +16,17 @@ public class Aeropuerto {
     
     private Tren tren;
     private String nombreAeropuerto;
-    private AtomicInteger hora;
     private boolean esHoraAtencion;
     
-    public Aeropuerto(String nombre, Terminal[] terminales, Aerolinea[] aerolineas, Tren tren, AtomicInteger hora){
+    public Aeropuerto(String nombre, Terminal[] terminales, Aerolinea[] aerolineas, Tren tren){
         this.nombreAeropuerto = nombre;
         this.terminales = terminales;
         this.aerolineas = aerolineas;
         this.tren = tren;
-        this.hora = hora;
         this.esHoraAtencion = false;
     }
     
-    public synchronized void ingresarAeropuerto(Pasajero nuevoPasajero){
+    public synchronized PuestoAtencion ingresarAeropuerto(Pasajero nuevoPasajero){
        Reserva reservaPasajero = nuevoPasajero.getReserva();
        Aerolinea aerolineaPasajero = reservaPasajero.getAerolinea();
        PuestoAtencion puesto = aerolineaPasajero.getPuestoAtencion();
@@ -41,17 +39,18 @@ public class Aeropuerto {
            }
         }
         System.out.println("\t\t\t"+SoutColores.GREEN+"El pasajero: "+nuevoPasajero.getNombre()+" INGRESO al puesto de informes del aeropuerto...");
+        return puesto;
     }
     
     public synchronized void comenzarHorarioAtencion(){
-        System.out.println("\t"+SoutColores.RED+"EL AEROPUERTO COMENZO SU HORARIO DE ATENCION...");
+        System.out.println("\t"+SoutColores.BLACK_UNDERLINED+"EL AEROPUERTO COMENZO SU HORARIO DE ATENCION...");
         this.esHoraAtencion = true;
         this.notifyAll();
     }
     
     public synchronized void terminarHorarioAtencion(){
         this.esHoraAtencion = false;
-        System.out.println("\t"+SoutColores.RED+"EL AEROPUERTO FINALIZO SU HORARIO DE ATENCION...");
+        System.out.println("\t"+SoutColores.BLACK_UNDERLINED+"EL AEROPUERTO FINALIZO SU HORARIO DE ATENCION...");
     }
 
     public Aerolinea[] getAerolineas() {
@@ -84,14 +83,6 @@ public class Aeropuerto {
 
     public void setNombreAeropuerto(String nombreAeropuerto) {
         this.nombreAeropuerto = nombreAeropuerto;
-    }
-
-    public AtomicInteger getHora() {
-        return this.hora;
-    }
-
-    public void setHora(AtomicInteger hora) {
-        this.hora = hora;
     }
     
 }

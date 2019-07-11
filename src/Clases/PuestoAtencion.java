@@ -4,6 +4,8 @@ import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import utiles.SoutColores;
 
 /**
@@ -13,11 +15,11 @@ import utiles.SoutColores;
 public class PuestoAtencion {
 
     private static final int MAXPUESTOATENCION = 10;
-    private int cantActualPuesto = 0;
-    private final Semaphore fila = new Semaphore(MAXPUESTOATENCION, true);
-    private final Semaphore mutex = new Semaphore(1);
+    private int cantActualPuesto = 0, cantEspera = 0;
+    private final Semaphore mutexPuesto = new Semaphore(1, true);
     private final Lock lock = new ReentrantLock(true);
-    private final Condition guardiaPuesto = lock.newCondition();
+    private final Condition esperaHall = this.lock.newCondition();
+    private final Condition guardiaPuesto = this.lock.newCondition();
     private Guardia guardia;
     private String nombre;
 
@@ -26,22 +28,65 @@ public class PuestoAtencion {
         this.guardia = guardia;
     }
 
-    public void entrarFila(Pasajero pasajero) throws InterruptedException {
-        System.out.println("\t\t\t\t\t\t" + SoutColores.BLUE + "El pasajero: " + pasajero.getNombre() + " se encuentra en el hall central en espera...");
-        this.fila.acquire();
-        this.mutex.acquire();
-        System.out.println("\t\t\t\t\t\t" + SoutColores.BLUE + "El pasajero: " + pasajero.getNombre() + " entro a la fila el puesto de atencion...");
-        this.mutex.release();
+    public void entrarFilaPuesto(Pasajero pasajero) {
+        this.lock.lock();
+        try {
+            this.cantEspera++;
+            if(this.cantEspera == 1){
+                this.guardiaPuesto.signal();
+            }
+            while (this.cantActualPuesto == MAXPUESTOATENCION){
+                try {
+                    System.out.println("t\t\t"+SoutColores.RED+"El pasajero: "+pasajero.getNombre()+" esta ESPERANDO en el hall de espera del puesto de atencion: "+this.nombre+"...");
+                    this.esperaHall.await();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(PuestoAtencion.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            System.out.println("t\t\t"+SoutColores.RED+"El pasajero: "+pasajero.getNombre()+" COMENZO a hacer fila en el puesto de atencion: "+this.nombre+"...");
+            this.cantEspera--;
+            this.cantActualPuesto++;
+        } finally {
+            this.lock.unlock();
+        }
     }
     
-    public void salirFila(Pasajero pasajero) throws InterruptedException{
-        this.mutex.acquire();
-        System.out.println("\t\t\t\t\t\t" + SoutColores.BLUE + "El pasajero: " + pasajero.getNombre() + " ya fue atendido va a salir del puesto de atencion...");
-        
+    public void entrarPuestoAtencion(Pasajero pasajero){
+        try {
+            this.mutexPuesto.acquire();
+            System.out.println("\t\t\t"+SoutColores.RED+"El pasajero: "+pasajero.getNombre()+" comenzo a realizar el CHECK-IN en el puesto de atencion: "+this.nombre+"...");
+        } catch (InterruptedException ex) {
+            Logger.getLogger(PuestoAtencion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+    
+    public void salirPuestoAtencion(Pasajero pasajero) {
+        this.lock.lock();
+        try {
+            System.out.println("\t\t\t"+SoutColores.RED+"El pasajero: "+pasajero.getNombre()+" termino de realizar el CHECK-IN en el puesto de atencion: "+this.nombre+"...");
+            this.cantActualPuesto--;
+            this.guardiaPuesto.signal();
+            this.mutexPuesto.release();
+        } finally {
+            this.lock.unlock();
+        }
     }
 
-    public void dejarPasar() {
-        //this.guardiaPuesto.
+    public void verificarPuesto() {
+        this.lock.lock();
+        try {
+            while(this.cantEspera == 0 || this.cantActualPuesto <= MAXPUESTOATENCION){
+                try {
+                    this.guardiaPuesto.await();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(PuestoAtencion.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+            System.out.println("\t\t"+SoutColores.PURPLE+"El guardia: "+this.guardia.getNombre()+" dejara pasar un pasajero...");
+            this.esperaHall.signal();
+        } finally {
+            this.lock.unlock();
+        }
     }
 
     public String getNombre() {

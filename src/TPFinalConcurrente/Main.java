@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 public class Main {
     
     private static final int CANTTERMINALES = 3;
-    private static final int CANTPASAJEROS = 15;
+    private static final int CANTPASAJEROS = 25;
     private static final int CANTAEROLINEAS = 3;
     private static final Aerolinea[] AEROLINEAS = new Aerolinea[CANTAEROLINEAS];
     private static final String[] NOMBRESAEROLINEAS = {"AEROLINEAS ARGENTINAS", "LAN", "LATAM"};
@@ -77,7 +77,7 @@ public class Main {
         Aerolinea aerolineaPasajero;
         Terminal terminalPasajero;
         int i = 0;
-        while (true) {
+        while (i < CANTPASAJEROS) {
             indiceAerolinea = NUMRANDOM.nextInt(CANTAEROLINEAS);
             aerolineaPasajero = AEROLINEAS[indiceAerolinea];
             horaViaje = NUMRANDOM.nextInt(24);
@@ -104,7 +104,7 @@ public class Main {
         Tren trenInterno = new Tren("Tren Interno", TERMINALES);
         Thread tren = new Thread(trenInterno, "Tren Interno");
         tren.start();
-        Aeropuerto viajeBonito = new Aeropuerto("Viaje Bonito", TERMINALES, AEROLINEAS, trenInterno, HORA);
+        Aeropuerto viajeBonito = new Aeropuerto("Viaje Bonito", TERMINALES, AEROLINEAS, trenInterno);
         ControlDia pasoDia = new ControlDia(HORA, viajeBonito);
         Thread control = new Thread(pasoDia, "Simulador Tiempo");
         control.start();

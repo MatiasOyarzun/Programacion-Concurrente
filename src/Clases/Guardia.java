@@ -1,5 +1,8 @@
 package clases;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author OyarzunMatias
@@ -23,7 +26,12 @@ public class Guardia extends Persona implements Runnable{
     @Override
     public void run(){
         while(true){
-            this.puesto.dejarPasar();
+            try {
+                this.puesto.verificarPuesto();
+                Thread.sleep(100);
+            } catch (InterruptedException ex) {
+                Logger.getLogger(Guardia.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
     }
 }
