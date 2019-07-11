@@ -24,7 +24,7 @@ import java.util.logging.Logger;
 public class Main {
     
     private static final int CANTTERMINALES = 3;
-    private static final int CANTPASAJEROS = 25;
+    private static final int CANTPASAJEROS = 30;
     private static final int CANTAEROLINEAS = 3;
     private static final Aerolinea[] AEROLINEAS = new Aerolinea[CANTAEROLINEAS];
     private static final String[] NOMBRESAEROLINEAS = {"AEROLINEAS ARGENTINAS", "LAN", "LATAM"};
@@ -63,7 +63,7 @@ public class Main {
     
     public static void crearAerolineas(){
         for (int i = 0; i < CANTAEROLINEAS; i++) {
-            Guardia nuevoGuardia = new Guardia((i+1));
+            Guardia nuevoGuardia = new Guardia((i+1), "Guardia: "+(i+1));
             Thread guardia = new Thread(nuevoGuardia);
             PuestoAtencion nuevoPuesto = new PuestoAtencion("Puesto: "+NOMBRESAEROLINEAS[i], nuevoGuardia);
             nuevoGuardia.setPuesto(nuevoPuesto);

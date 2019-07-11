@@ -1,5 +1,6 @@
 package clases;
 
+import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -14,11 +15,13 @@ import utiles.SoutColores;
  */
 public class PuestoAtencion {
 
-    private static final int MAXPUESTOATENCION = 10;
+    private static final int MAXPUESTOATENCION = 2;
     private int cantActualPuesto = 0, cantEspera = 0;
-    private final Semaphore mutexPuesto = new Semaphore(1, true);
+    private final PriorityBlockingQueue<String> colaPrioridad;
+    private final Semaphore mutexPuesto = new Semaphore(1);
     private final Lock lock = new ReentrantLock(true);
     private final Condition esperaHall = this.lock.newCondition();
+    private final Condition esperaFila = this.lock.newCondition();
     private final Condition guardiaPuesto = this.lock.newCondition();
     private Guardia guardia;
     private String nombre;
@@ -26,24 +29,26 @@ public class PuestoAtencion {
     public PuestoAtencion(String nombrePuesto, Guardia guardia) {
         this.nombre = nombrePuesto;
         this.guardia = guardia;
+        this.colaPrioridad = new PriorityBlockingQueue();
     }
 
-    public void entrarFilaPuesto(Pasajero pasajero) {
+    public void entrarFilaPuesto(String nombrePasajero) {
         this.lock.lock();
         try {
             this.cantEspera++;
             if(this.cantEspera == 1){
                 this.guardiaPuesto.signal();
             }
-            while (this.cantActualPuesto == MAXPUESTOATENCION){
+            while (this.cantActualPuesto >= MAXPUESTOATENCION){
                 try {
-                    System.out.println("t\t\t"+SoutColores.RED+"El pasajero: "+pasajero.getNombre()+" esta ESPERANDO en el hall de espera del puesto de atencion: "+this.nombre+"...");
+                    System.out.println("\t\t\t\t\t"+SoutColores.RED+"El pasajero: "+nombrePasajero+" esta ESPERANDO en el [HALL DE ESPERA] del puesto de atencion: "+this.nombre+"...");
                     this.esperaHall.await();
                 } catch (InterruptedException ex) {
                     Logger.getLogger(PuestoAtencion.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            System.out.println("t\t\t"+SoutColores.RED+"El pasajero: "+pasajero.getNombre()+" COMENZO a hacer fila en el puesto de atencion: "+this.nombre+"...");
+            System.out.println("\t\t\t\t\t"+SoutColores.RED+"El pasajero: "+nombrePasajero+" COMENZO a hacer fila en el puesto de atencion: "+this.nombre+"...");
+            this.colaPrioridad.add(nombrePasajero);
             this.cantEspera--;
             this.cantActualPuesto++;
         } finally {
@@ -51,20 +56,28 @@ public class PuestoAtencion {
         }
     }
     
-    public void entrarPuestoAtencion(Pasajero pasajero){
+    public void entrarPuestoAtencion(String nombrePasajero){
+        this.lock.lock();
         try {
+            while(!(this.colaPrioridad.peek().equals(nombrePasajero))){
+                this.esperaFila.await();
+            }
+            this.colaPrioridad.poll();
             this.mutexPuesto.acquire();
-            System.out.println("\t\t\t"+SoutColores.RED+"El pasajero: "+pasajero.getNombre()+" comenzo a realizar el CHECK-IN en el puesto de atencion: "+this.nombre+"...");
+            System.out.println("\t\t\t\t\t"+SoutColores.RED+"El pasajero: "+nombrePasajero+" comenzo a realizar el CHECK-IN en el puesto de atencion: "+this.nombre+"...");
         } catch (InterruptedException ex) {
             Logger.getLogger(PuestoAtencion.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            this.lock.unlock();
         }
     }
     
-    public void salirPuestoAtencion(Pasajero pasajero) {
+    public void salirPuestoAtencion(String nombrePasajero) {
         this.lock.lock();
         try {
-            System.out.println("\t\t\t"+SoutColores.RED+"El pasajero: "+pasajero.getNombre()+" termino de realizar el CHECK-IN en el puesto de atencion: "+this.nombre+"...");
+            System.out.println("\t\t\t\t\t"+SoutColores.RED+"El pasajero: "+nombrePasajero+" termino de realizar el CHECK-IN en el puesto de atencion: "+this.nombre+"...");
             this.cantActualPuesto--;
+            this.esperaFila.signal();
             this.guardiaPuesto.signal();
             this.mutexPuesto.release();
         } finally {

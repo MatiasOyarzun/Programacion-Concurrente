@@ -1,7 +1,7 @@
 package clases;
 
+import java.util.Random;
 import utiles.SoutColores;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -17,6 +17,7 @@ public class Aeropuerto {
     private Tren tren;
     private String nombreAeropuerto;
     private boolean esHoraAtencion;
+    private final Random random;
     
     public Aeropuerto(String nombre, Terminal[] terminales, Aerolinea[] aerolineas, Tren tren){
         this.nombreAeropuerto = nombre;
@@ -24,6 +25,7 @@ public class Aeropuerto {
         this.aerolineas = aerolineas;
         this.tren = tren;
         this.esHoraAtencion = false;
+        this.random = new Random();
     }
     
     public synchronized PuestoAtencion ingresarAeropuerto(Pasajero nuevoPasajero){
@@ -39,18 +41,23 @@ public class Aeropuerto {
            }
         }
         System.out.println("\t\t\t"+SoutColores.GREEN+"El pasajero: "+nuevoPasajero.getNombre()+" INGRESO al puesto de informes del aeropuerto...");
+        try {
+            Thread.sleep(100*(this.random.nextInt(5)+1));
+        } catch (InterruptedException ex) {
+            Logger.getLogger(Aeropuerto.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return puesto;
     }
     
     public synchronized void comenzarHorarioAtencion(){
-        System.out.println("\t"+SoutColores.BLACK_UNDERLINED+"EL AEROPUERTO COMENZO SU HORARIO DE ATENCION...");
+        System.out.println("\n\t\t\t\t\t\t\t\t\t"+SoutColores.PURPLE+"║ EL AEROPUERTO COMENZO SU HORARIO DE ATENCION!... ║\n");
         this.esHoraAtencion = true;
         this.notifyAll();
     }
     
     public synchronized void terminarHorarioAtencion(){
         this.esHoraAtencion = false;
-        System.out.println("\t"+SoutColores.BLACK_UNDERLINED+"EL AEROPUERTO FINALIZO SU HORARIO DE ATENCION...");
+        System.out.println("\n\t\t\t\t\t\t\t\t\t"+SoutColores.PURPLE+"║ EL AEROPUERTO FINALIZO SU HORARIO DE ATENCION!... ║\n");
     }
 
     public Aerolinea[] getAerolineas() {

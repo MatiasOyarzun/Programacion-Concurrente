@@ -11,8 +11,8 @@ public class Guardia extends Persona implements Runnable{
     
     private PuestoAtencion puesto;
     
-    public Guardia(int id){
-        super(id);
+    public Guardia(int id, String nombre){
+        super(id, nombre);
     }
     
     public PuestoAtencion getPuesto(){

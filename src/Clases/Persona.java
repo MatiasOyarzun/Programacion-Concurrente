@@ -47,4 +47,14 @@ public abstract class Persona {
     public void setId(int id) {
         this.id = id;
     }
+    
+    @Override
+    public boolean equals(Object obj){
+        return (this.toString().equals(obj.toString()));
+    }
+    
+    @Override
+    public String toString(){
+        return this.nombre;
+    }
 }
