@@ -39,7 +39,7 @@ public class PuestoAtencion {
             if(this.cantEspera == 1){
                 this.guardiaPuesto.signal();
             }
-            while (this.cantActualPuesto >= MAXPUESTOATENCION){
+            while (this.cantActualPuesto == MAXPUESTOATENCION){
                 try {
                     System.out.println("\t\t\t\t\t"+SoutColores.RED+"El pasajero: "+nombrePasajero+" esta ESPERANDO en el [HALL DE ESPERA] del puesto de atencion: "+this.nombre+"...");
                     this.esperaHall.await();
@@ -88,14 +88,14 @@ public class PuestoAtencion {
     public void verificarPuesto() {
         this.lock.lock();
         try {
-            while(this.cantEspera == 0 || this.cantActualPuesto <= MAXPUESTOATENCION){
+            while(this.cantEspera == 0 || this.cantActualPuesto == MAXPUESTOATENCION){
                 try {
                     this.guardiaPuesto.await();
                 } catch (InterruptedException ex) {
                     Logger.getLogger(PuestoAtencion.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            System.out.println("\t\t"+SoutColores.PURPLE+"El guardia: "+this.guardia.getNombre()+" dejara pasar un pasajero...");
+            System.out.println("\t\t"+SoutColores.PURPLE+"El guardia: "+this.guardia.getNombre()+" del puesto: "+this.nombre+" dejara pasar un pasajero...");
             this.esperaHall.signal();
         } finally {
             this.lock.unlock();

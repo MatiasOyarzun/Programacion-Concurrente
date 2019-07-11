@@ -1,5 +1,6 @@
 package tpfinalconcurrente;
 
+import clases.CargaTren;
 import clases.Tienda;
 import clases.Terminal;
 import clases.CajaTienda;
@@ -25,6 +26,7 @@ public class Main {
     
     private static final int CANTTERMINALES = 3;
     private static final int CANTPASAJEROS = 30;
+    private static final int CANTCARGATREN = 5;
     private static final int CANTAEROLINEAS = 3;
     private static final Aerolinea[] AEROLINEAS = new Aerolinea[CANTAEROLINEAS];
     private static final String[] NOMBRESAEROLINEAS = {"AEROLINEAS ARGENTINAS", "LAN", "LATAM"};
@@ -101,7 +103,8 @@ public class Main {
     public static void main(String[] args) {
         crearTerminales();
         crearAerolineas();
-        Tren trenInterno = new Tren("Tren Interno", TERMINALES);
+        CargaTren carga = new CargaTren(CANTCARGATREN);
+        Tren trenInterno = new Tren("Tren Interno", TERMINALES, carga);
         Thread tren = new Thread(trenInterno, "Tren Interno");
         tren.start();
         Aeropuerto viajeBonito = new Aeropuerto("Viaje Bonito", TERMINALES, AEROLINEAS, trenInterno);
