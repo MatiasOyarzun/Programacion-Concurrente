@@ -34,6 +34,14 @@ public class Reserva {
         this.terminal = terminal;
     }
     
+    public int getHoraVuelo(){
+        return this.horaVuelo;
+    }
+    
+    public void setHoraVuelo(int hora){
+        this.horaVuelo = hora;
+    }
+    
     public void setPuestoEmbarque(int puesto){
         this.puestoEmbarque = puesto;
     }

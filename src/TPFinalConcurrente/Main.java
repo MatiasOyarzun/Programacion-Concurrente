@@ -10,6 +10,7 @@ import clases.Tren;
 import clases.Aerolinea;
 import clases.Pasajero;
 import clases.Aeropuerto;
+import clases.CajeraTienda;
 import clases.ControlDia;
 import clases.Reserva;
 
@@ -34,8 +35,8 @@ public class Main {
     private static final Terminal[] TERMINALES = new Terminal[CANTTERMINALES];
     private static final char[] LETRASTERMINALES = {'A', 'B', 'C'};
     private static final AtomicInteger HORA = new AtomicInteger(0);
-    private static final Random NUMRANDOM = new Random();
-    private static final int CANTPASAJEROS = CANTCARGATREN*(NUMRANDOM.nextInt(10)+3);
+    private static final Random RANDOM = new Random();
+    private static final int CANTPASAJEROS = CANTCARGATREN*(RANDOM.nextInt(10)+3);
     
     public static void crearTerminales(){
         int numPuesto = 1;
@@ -56,8 +57,9 @@ public class Main {
         Tienda tienda;
         for (int i = 0; i < CANTCAJASXTIENDA; i++) {
             cajas[i] = new CajaTienda(i);
-            Thread nuevaCaja = new Thread(cajas[i]);
-            nuevaCaja.start();
+            CajeraTienda cajera = new CajeraTienda(i, cajas[i]);
+            Thread nuevaCajera = new Thread(cajera, ("Cajera: "+i));
+            nuevaCajera.start();
         }
         tienda = new Tienda(cajas);
         return tienda;
@@ -80,15 +82,15 @@ public class Main {
         Terminal terminalPasajero;
         int i = 0;
         while (i < CANTPASAJEROS) {
-            indiceAerolinea = NUMRANDOM.nextInt(CANTAEROLINEAS);
+            indiceAerolinea = RANDOM.nextInt(CANTAEROLINEAS);
             aerolineaPasajero = AEROLINEAS[indiceAerolinea];
-            horaViaje = NUMRANDOM.nextInt(24);
-            indiceTerminal = NUMRANDOM.nextInt(CANTTERMINALES);
+            horaViaje = RANDOM.nextInt(24);
+            indiceTerminal = RANDOM.nextInt(CANTTERMINALES);
             terminalPasajero = TERMINALES[indiceTerminal];
-            indicePuesto = NUMRANDOM.nextInt(CANTPUESTOSTERMINAL);
+            indicePuesto = RANDOM.nextInt(CANTPUESTOSTERMINAL);
             puesto = (terminalPasajero.getPuestos())[indicePuesto];
             Reserva nuevaReserva = new Reserva(aerolineaPasajero, horaViaje, terminalPasajero, puesto);
-            Pasajero nuevoPasajero = new Pasajero((i+1), "Pasajero: "+(i+1), nuevaReserva, viajeBonito);
+            Pasajero nuevoPasajero = new Pasajero((i+1), "Pasajero: "+(i+1), nuevaReserva, viajeBonito, RANDOM.nextBoolean(), RANDOM.nextBoolean(), HORA);
             Thread pasajero = new Thread(nuevoPasajero, "Pasajero: "+(i+1));
             pasajero.start();
             try {

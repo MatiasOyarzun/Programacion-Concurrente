@@ -7,7 +7,7 @@ package clases;
 public class Terminal {
     
     private int[] puestosEmbarque;
-    private final Tienda tienda;
+    private Tienda tienda;
     private char letraTerminal;
     
     public Terminal(char letra, int[] puestos, Tienda tienda){
@@ -30,5 +30,13 @@ public class Terminal {
     
     public void setLetra(char letraTerminal){
         this.letraTerminal = letraTerminal;
+    }
+    
+    public void setTienda(Tienda tienda){
+        this.tienda = tienda;
+    }
+    
+    public Tienda getTienda(){
+        return this.tienda;
     }
 }
