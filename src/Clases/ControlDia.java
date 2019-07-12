@@ -23,6 +23,7 @@ public class ControlDia implements Runnable{
     
     @Override
     public void run(){
+        int i = 1;
         while(true){
             try {
                 Thread.sleep(2000);
@@ -36,6 +37,8 @@ public class ControlDia implements Runnable{
                         Thread.sleep(200);
                     }else{
                         if(this.hora.get() == HORARIO_COMIENZO_NUEVO_DIA){
+                            System.out.println("--------DIA: "+i+" FINALIZADO!!.--------");
+                            i++;
                             this.hora.set(0);
                         }
                     }

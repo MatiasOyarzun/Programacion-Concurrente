@@ -1,7 +1,7 @@
 package clases;
 
 import java.util.Random;
-import utiles.SoutColores;
+import Utiles.SoutColores;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -42,7 +42,7 @@ public class Aeropuerto {
         }
         System.out.println("\t\t\t"+SoutColores.GREEN+"El pasajero: "+nuevoPasajero.getNombre()+" INGRESO al puesto de informes del aeropuerto...");
         try {
-            Thread.sleep(100*(this.random.nextInt(5)+1));
+            Thread.sleep(100*(this.random.nextInt(3)+1));
         } catch (InterruptedException ex) {
             Logger.getLogger(Aeropuerto.class.getName()).log(Level.SEVERE, null, ex);
         }

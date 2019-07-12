@@ -25,7 +25,6 @@ import java.util.logging.Logger;
 public class Main {
     
     private static final int CANTTERMINALES = 3;
-    private static final int CANTPASAJEROS = 30;
     private static final int CANTCARGATREN = 5;
     private static final int CANTAEROLINEAS = 3;
     private static final Aerolinea[] AEROLINEAS = new Aerolinea[CANTAEROLINEAS];
@@ -36,6 +35,7 @@ public class Main {
     private static final char[] LETRASTERMINALES = {'A', 'B', 'C'};
     private static final AtomicInteger HORA = new AtomicInteger(0);
     private static final Random NUMRANDOM = new Random();
+    private static final int CANTPASAJEROS = CANTCARGATREN*(NUMRANDOM.nextInt(10)+3);
     
     public static void crearTerminales(){
         int numPuesto = 1;
@@ -103,8 +103,8 @@ public class Main {
     public static void main(String[] args) {
         crearTerminales();
         crearAerolineas();
-        CargaTren carga = new CargaTren(CANTCARGATREN);
-        Tren trenInterno = new Tren("Tren Interno", TERMINALES, carga);
+        CargaTren carga = new CargaTren(CANTCARGATREN, CANTTERMINALES);
+        Tren trenInterno = new Tren("Tren Interno", TERMINALES, carga, CANTTERMINALES);
         Thread tren = new Thread(trenInterno, "Tren Interno");
         tren.start();
         Aeropuerto viajeBonito = new Aeropuerto("Viaje Bonito", TERMINALES, AEROLINEAS, trenInterno);

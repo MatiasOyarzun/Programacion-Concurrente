@@ -7,7 +7,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import utiles.SoutColores;
+import Utiles.SoutColores;
 
 /**
  *
@@ -67,13 +67,10 @@ public class PuestoAtencion {
             System.out.println("\t\t\t\t\t"+SoutColores.RED+"El pasajero: "+nombrePasajero+" comenzo a realizar el CHECK-IN en el puesto de atencion: "+this.nombre+"...");
         } catch (InterruptedException ex) {
             Logger.getLogger(PuestoAtencion.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            this.lock.unlock();
         }
     }
     
     public void salirPuestoAtencion(String nombrePasajero) {
-        this.lock.lock();
         try {
             System.out.println("\t\t\t\t\t"+SoutColores.RED+"El pasajero: "+nombrePasajero+" termino de realizar el CHECK-IN en el puesto de atencion: "+this.nombre+"...");
             this.cantActualPuesto--;
@@ -84,7 +81,7 @@ public class PuestoAtencion {
             this.lock.unlock();
         }
     }
-
+    
     public void verificarPuesto() {
         this.lock.lock();
         try {
