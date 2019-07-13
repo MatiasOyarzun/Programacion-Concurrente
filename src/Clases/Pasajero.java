@@ -81,13 +81,13 @@ public class Pasajero extends Persona implements Runnable{
             cargaTren.subirCargaTren(this.nombre, (this.reserva.getTerminal().getLetra()));
             trenInterno.trasladarATerminal(this.reserva.getTerminal().getLetra());
             cargaTren.bajarCargaTren(this.nombre);
-            if ((this.hora.get() + 2 <= horaVuelo) && (this.verTienda)) {
+            if (((this.hora.get() + 2 <= horaVuelo) || (this.hora.get() > horaVuelo)) && (this.verTienda)) {
                 System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: "+this.nombre+" esta viendo la tienda de la terminal: "+terminal.getLetra()+"...");
                 Thread.sleep(2000*3);
             }else{
                 System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: "+this.nombre+" NO VA A ver, y por lo tanto TAMPOCO VA A comprar en la tienda de la terminal: "+terminal.getLetra()+" (ya sea por falta de tiempo, o porque no tenia ganas)");
             }
-            if ((this.hora.get() + 3 <= horaVuelo) && (this.comprarTienda && this.verTienda)) {
+            if (((this.hora.get() + 3 <= horaVuelo) || (this.hora.get() > horaVuelo)) && (this.comprarTienda && this.verTienda)) {
                 tiendaTerminal.entrarTienda(this.nombre);
                 ArrayList<Producto> carro = new ArrayList<>();
                 tiendaTerminal.seleccionarProductos(this.nombre, carro);
@@ -100,7 +100,8 @@ public class Pasajero extends Persona implements Runnable{
                 caja.salirCaja(this.nombre);
                 tiendaTerminal.salirTienda(this.nombre);
             }
-            System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: "+this.nombre+" ESTA LIBRE");
+            terminal.esperarVuelo(this.nombre, this.reserva);
+            terminal.abordarVueloEmbarque(this.nombre, this.reserva);
         } catch (InterruptedException ex) {
             Logger.getLogger(Pasajero.class.getName()).log(Level.SEVERE, null, ex);
         }

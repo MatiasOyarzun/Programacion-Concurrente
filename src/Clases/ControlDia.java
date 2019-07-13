@@ -40,7 +40,7 @@ public class ControlDia implements Runnable {
                         Thread.sleep(200);
                     } else {
                         if (this.hora.get() == HORARIO_COMIENZO_NUEVO_DIA) {
-                            System.out.println("--------DIA: " + i + " FINALIZADO!!.--------");
+                            System.out.println("\n\n--------DIA: " + i + " FINALIZADO!!.--------\n\n");
                             i++;
                             for (int j = 0; j < cantTerminales; j++) {
                                 tienda = terminales[j].getTienda();
@@ -51,10 +51,18 @@ public class ControlDia implements Runnable {
                     }
 
                 }
-                System.out.println("CONTROL DEL DIA, ES LA HORA: " + this.hora.get() + "hs.");
+                System.out.println("\n\nCONTROL DEL DIA, ES LA HORA: " + this.hora.get() + "hs.\n\n");
+                this.notificarTerminalesHora(terminales);
             } catch (InterruptedException ex) {
                 Logger.getLogger(ControlDia.class.getName()).log(Level.SEVERE, null, ex);
             }
+        }
+    }
+    
+    private void notificarTerminalesHora(Terminal[] terminales){
+        int cantTerminales = terminales.length;
+        for (int i = 0; i < cantTerminales; i++) {
+            terminales[i].actualizarHoraTerminal();
         }
     }
 }

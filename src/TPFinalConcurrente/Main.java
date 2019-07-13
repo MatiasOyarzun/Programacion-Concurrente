@@ -36,7 +36,7 @@ public class Main {
     private static final char[] LETRASTERMINALES = {'A', 'B', 'C'};
     private static final AtomicInteger HORA = new AtomicInteger(0);
     private static final Random RANDOM = new Random();
-    private static final int CANTPASAJEROS = CANTCARGATREN*(RANDOM.nextInt(10)+3);
+    private static final int CANTPASAJEROS = /*CANTCARGATREN*(RANDOM.nextInt(10)+3)*/15;
     
     public static void crearTerminales(){
         int numPuesto = 1;
@@ -48,7 +48,7 @@ public class Main {
                 numPuesto++;
             }
             nuevaTienda = crearTienda(LETRASTERMINALES[i]);
-            TERMINALES[i] = new Terminal(LETRASTERMINALES[i], puestosTerminal, nuevaTienda);
+            TERMINALES[i] = new Terminal(LETRASTERMINALES[i], puestosTerminal, nuevaTienda, HORA);
         }
     }
     
@@ -93,8 +93,8 @@ public class Main {
             Reserva nuevaReserva = new Reserva(aerolineaPasajero, horaViaje, terminalPasajero, puesto);
             verTienda = RANDOM.nextBoolean();
             comprarTienda = RANDOM.nextBoolean();
+            System.out.println("Pasajero: "+(i+1)+" VER TIENDA: "+verTienda+" COMPRAR TIENDA: "+comprarTienda+" hora vuelo: "+nuevaReserva.getHoraVuelo());
             Pasajero nuevoPasajero = new Pasajero((i+1), "Pasajero: "+(i+1), nuevaReserva, viajeBonito, verTienda, comprarTienda, HORA);
-            System.out.println("___---____---__--_-EL PASAJERO: "+(i+1)+" VER TIENDA: "+verTienda+" - COMPRAR TIENDA: "+comprarTienda+"-_--__---___---___");
             Thread pasajero = new Thread(nuevoPasajero, "Pasajero: "+(i+1));
             pasajero.start();
             try {
