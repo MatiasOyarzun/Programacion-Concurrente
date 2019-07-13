@@ -13,7 +13,6 @@ public class ControlDia implements Runnable {
     private static final int HORARIO_INICIO_ATENCION = 6;
     private static final int HORARIO_FIN_ATENCION = 22;
     private static final int HORARIO_COMIENZO_NUEVO_DIA = 24;
-    private static final int HORARIO_REPONER_PRODUCTOS = 12;
     private final AtomicInteger hora;
     private final Aeropuerto aeropuerto;
 
@@ -36,27 +35,21 @@ public class ControlDia implements Runnable {
                     this.aeropuerto.comenzarHorarioAtencion();
                     Thread.sleep(200);
                 } else {
-                    if (this.hora.get() == HORARIO_REPONER_PRODUCTOS) {
-                        for (int j = 0; j < cantTerminales; j++) {
-                            tienda = terminales[j].getTienda();
-                            tienda.reponerProductos();
-                        }
+                    if (this.hora.get() == HORARIO_FIN_ATENCION) {
+                        this.aeropuerto.terminarHorarioAtencion();
+                        Thread.sleep(200);
                     } else {
-                        if (this.hora.get() == HORARIO_FIN_ATENCION) {
-                            this.aeropuerto.terminarHorarioAtencion();
-                            Thread.sleep(200);
-                        } else {
-                            if (this.hora.get() == HORARIO_COMIENZO_NUEVO_DIA) {
-                                System.out.println("--------DIA: " + i + " FINALIZADO!!.--------");
-                                i++;
-                                for (int j = 0; j < cantTerminales; j++) {
-                                    tienda = terminales[j].getTienda();
-                                    tienda.reponerProductos();
-                                }
-                                this.hora.set(0);
+                        if (this.hora.get() == HORARIO_COMIENZO_NUEVO_DIA) {
+                            System.out.println("--------DIA: " + i + " FINALIZADO!!.--------");
+                            i++;
+                            for (int j = 0; j < cantTerminales; j++) {
+                                tienda = terminales[j].getTienda();
+                                tienda.reponerProductos();
                             }
+                            this.hora.set(0);
                         }
                     }
+
                 }
                 System.out.println("CONTROL DEL DIA, ES LA HORA: " + this.hora.get() + "hs.");
             } catch (InterruptedException ex) {

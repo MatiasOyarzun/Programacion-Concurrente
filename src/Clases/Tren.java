@@ -35,7 +35,7 @@ public class Tren implements Runnable {
                 char letraTerminal;
                 this.carga.partirViaje();
                 Thread.sleep(1000);
-                System.out.println("\t\t\t\t\t\t\t" + SoutColores.BLUE_UNDERLINED + "El tren: " + this.nombreTren + " COMENZO RECORRIDO...");
+                System.out.println("\n\t\t\t\t\t\t\t" + SoutColores.BLUE_UNDERLINED + "El tren: " + this.nombreTren + " COMENZO RECORRIDO...\n");
                 for (int i = 0; i < this.cantTerminales; i++) {
                     letraTerminal = this.terminalesPorRecorrer[i].getLetra();
                     System.out.println("\t\t\t\t\t\t\t" + SoutColores.BLUE_UNDERLINED + "El tren: " + this.nombreTren + " esta PASANDO por la terminal: " + letraTerminal);
@@ -44,8 +44,8 @@ public class Tren implements Runnable {
                 }
                 this.carga.volverViaje();
                 Thread.sleep(2000*this.cantTerminales);
+                System.out.println("\n\t\t\t\t\t\t\t" + SoutColores.BLUE_UNDERLINED + "El tren: " + this.nombreTren + " ya regreso al punto de origen...\n");
                 this.carga.llegoOrigen();
-                System.out.println("\t\t\t\t\t\t\t" + SoutColores.BLUE_UNDERLINED + "El tren: " + this.nombreTren + " ya regreso al punto de origen...");
             } catch (InterruptedException ex) {
                 Logger.getLogger(Tren.class.getName()).log(Level.SEVERE, null, ex);
             }

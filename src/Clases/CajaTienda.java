@@ -1,7 +1,11 @@
 package clases;
 
-import java.util.concurrent.ArrayBlockingQueue;
+import Utiles.SoutColores;
+import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
+import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -10,59 +14,101 @@ import java.util.logging.Logger;
  * @author OyarzunMatias
  */
 public class CajaTienda {
-    
+
     private int id;
     private final Semaphore caja;
-    private static final int MAXCINTA = 30;
-    private final ArrayBlockingQueue<Producto> cintaTransportadora;
-    
-    public CajaTienda(int id){
+    private int cantActualCinta;
+    private final Lock lock = new ReentrantLock();
+    private final Condition esperaCajera = this.lock.newCondition();
+    private final Condition esperaPasajero = this.lock.newCondition();
+    private final ArrayList<Producto> cintaTransportadora;
+
+    public CajaTienda(int id) {
         this.id = id;
         this.caja = new Semaphore(1, true);
-        this.cintaTransportadora = new ArrayBlockingQueue(MAXCINTA);
+        this.cintaTransportadora = new ArrayList<>();
+        this.cantActualCinta = 0;
     }
-    
-    public void esperarCaja(String nombrePasajero){
+
+    public int getCantActualCinta() {
+        return this.cantActualCinta;
+    }
+
+    public void setCantActualCinta(int cant) {
+        this.cantActualCinta = cant;
+    }
+
+    public void esperarCaja(String nombrePasajero) {
         try {
             this.caja.acquire();
         } catch (InterruptedException ex) {
             Logger.getLogger(CajaTienda.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("El pasajero: "+nombrePasajero+" ENTRO en la caja");
-        
+        System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: " + nombrePasajero + " ENTRO en la caja: " + this.id + "...");
+
     }
-    
-    public void salirCaja(String nombrePasajero){
-        System.out.println("El pasajero: "+nombrePasajero+" SALIO de la caja");
+
+    public void salirCaja(String nombrePasajero) {
+        System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: " + nombrePasajero + " SALIO de la caja: " + this.id + "...");
         this.caja.release();
     }
-    
-    public void ponerProductosCinta(ArrayBlockingQueue<Producto> carrito){
-        int longCarro = carrito.size();
-        for (int i = 0; i < longCarro; i++) {
-            try {
-                this.cintaTransportadora.put(carrito.take());
-            } catch (InterruptedException ex) {
-                Logger.getLogger(CajaTienda.class.getName()).log(Level.SEVERE, null, ex);
+
+    public void ponerProductosCinta(ArrayList<Producto> carrito) {
+        this.lock.lock();
+        try {
+            int longCarro = carrito.size();
+            this.cantActualCinta = longCarro;
+            for (int i = 0; i < longCarro; i++) {
+                this.cintaTransportadora.add((carrito.get(i)));
             }
+            carrito.clear();
+            this.esperaCajera.signal();
+        } finally {
+            this.lock.unlock();
         }
     }
-    
-    public Producto obtenerProductoCinta(){
-        Producto producto = null;
+
+    public void verificarCinta() {
+        this.lock.lock();
         try {
-            producto = this.cintaTransportadora.take();
+            while(this.cantActualCinta > 0){
+                try {
+                    this.esperaPasajero.await();
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(CajaTienda.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        } finally {
+            this.lock.unlock();
+        }
+    }
+
+    public Producto obtenerProductoCinta() {
+        this.lock.lock();
+        Producto producto = null;
+        try {  
+            while (this.cantActualCinta == 0) {
+                this.esperaCajera.await();
+            }
+            producto = this.cintaTransportadora.get(0);
+            this.cantActualCinta--;
+            this.cintaTransportadora.remove(0);
+            if(this.cantActualCinta == 0){
+                this.esperaPasajero.signal();
+            }
         } catch (InterruptedException ex) {
             Logger.getLogger(CajaTienda.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            this.lock.unlock();
         }
         return producto;
     }
-    
-    public void setId(int id){
+
+    public void setId(int id) {
         this.id = id;
     }
-    
-    public int getId(){
+
+    public int getId() {
         return this.id;
     }
 }

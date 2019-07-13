@@ -5,6 +5,7 @@
  */
 package clases;
 
+import Utiles.SoutColores;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -34,7 +35,7 @@ public class CajeraTienda extends Persona implements Runnable{
         while(true){
             try {
                 Producto producto = this.caja.obtenerProductoCinta();
-                System.out.println("La cajera: "+this.id+" esta PROCESANDO un producto...");
+                System.out.println("\t\t" + SoutColores.PURPLE +"La cajera: "+this.id+" esta PROCESANDO un producto...");
                 Thread.sleep(200);
                 producto.restarStock();
             } catch (InterruptedException ex) {

@@ -47,21 +47,21 @@ public class Main {
                 puestosTerminal[j] = numPuesto;
                 numPuesto++;
             }
-            nuevaTienda = crearTiendas();
+            nuevaTienda = crearTienda(LETRASTERMINALES[i]);
             TERMINALES[i] = new Terminal(LETRASTERMINALES[i], puestosTerminal, nuevaTienda);
         }
     }
     
-    public static Tienda crearTiendas(){
+    public static Tienda crearTienda(char letraTerminal){
         CajaTienda[] cajas = new CajaTienda[CANTCAJASXTIENDA];
         Tienda tienda;
         for (int i = 0; i < CANTCAJASXTIENDA; i++) {
             cajas[i] = new CajaTienda(i);
             CajeraTienda cajera = new CajeraTienda(i, cajas[i]);
-            Thread nuevaCajera = new Thread(cajera, ("Cajera: "+i));
+            Thread nuevaCajera = new Thread(cajera, ("CAJERA: "+i+" - TIENDA TERMINAL: "+letraTerminal));
             nuevaCajera.start();
         }
-        tienda = new Tienda(cajas);
+        tienda = new Tienda(cajas, "TIENDA TERMINAL: "+letraTerminal);
         return tienda;
     }
     
@@ -80,6 +80,7 @@ public class Main {
         int indiceAerolinea, horaViaje, indiceTerminal, indicePuesto, puesto;
         Aerolinea aerolineaPasajero;
         Terminal terminalPasajero;
+        Boolean verTienda, comprarTienda;
         int i = 0;
         while (i < CANTPASAJEROS) {
             indiceAerolinea = RANDOM.nextInt(CANTAEROLINEAS);
@@ -90,7 +91,10 @@ public class Main {
             indicePuesto = RANDOM.nextInt(CANTPUESTOSTERMINAL);
             puesto = (terminalPasajero.getPuestos())[indicePuesto];
             Reserva nuevaReserva = new Reserva(aerolineaPasajero, horaViaje, terminalPasajero, puesto);
-            Pasajero nuevoPasajero = new Pasajero((i+1), "Pasajero: "+(i+1), nuevaReserva, viajeBonito, RANDOM.nextBoolean(), RANDOM.nextBoolean(), HORA);
+            verTienda = RANDOM.nextBoolean();
+            comprarTienda = RANDOM.nextBoolean();
+            Pasajero nuevoPasajero = new Pasajero((i+1), "Pasajero: "+(i+1), nuevaReserva, viajeBonito, verTienda, comprarTienda, HORA);
+            System.out.println("___---____---__--_-EL PASAJERO: "+(i+1)+" VER TIENDA: "+verTienda+" - COMPRAR TIENDA: "+comprarTienda+"-_--__---___---___");
             Thread pasajero = new Thread(nuevoPasajero, "Pasajero: "+(i+1));
             pasajero.start();
             try {

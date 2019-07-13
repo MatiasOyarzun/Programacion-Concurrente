@@ -1,8 +1,8 @@
 package clases;
 
 import Utiles.SoutColores;
+import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -81,19 +81,26 @@ public class Pasajero extends Persona implements Runnable{
             cargaTren.subirCargaTren(this.nombre, (this.reserva.getTerminal().getLetra()));
             trenInterno.trasladarATerminal(this.reserva.getTerminal().getLetra());
             cargaTren.bajarCargaTren(this.nombre);
-            if ((this.hora.get() + 3 <= horaVuelo) && (this.verTienda)) {
-                System.out.println("\t\t\t\t\t\t\t\t\t"+SoutColores.GREEN_BACKGROUND_BRIGHT+"El pasajero: "+this.nombre+" esta viendo la tienda...");
+            if ((this.hora.get() + 2 <= horaVuelo) && (this.verTienda)) {
+                System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: "+this.nombre+" esta viendo la tienda de la terminal: "+terminal.getLetra()+"...");
                 Thread.sleep(2000*3);
+            }else{
+                System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: "+this.nombre+" NO VA A ver, y por lo tanto TAMPOCO VA A comprar en la tienda de la terminal: "+terminal.getLetra()+" (ya sea por falta de tiempo, o porque no tenia ganas)");
             }
-            if ((this.hora.get() + 2 <= horaVuelo) && (this.comprarTienda)) {
+            if ((this.hora.get() + 3 <= horaVuelo) && (this.comprarTienda && this.verTienda)) {
                 tiendaTerminal.entrarTienda(this.nombre);
-                ArrayBlockingQueue carro = tiendaTerminal.seleccionarProductos(this.nombre);
+                ArrayList<Producto> carro = new ArrayList<>();
+                tiendaTerminal.seleccionarProductos(this.nombre, carro);
                 Thread.sleep(500);
                 CajaTienda caja = tiendaTerminal.irCaja(this.nombre);
                 caja.esperarCaja(this.nombre);
                 caja.ponerProductosCinta(carro);
+                Thread.sleep(500);
+                caja.verificarCinta();
+                caja.salirCaja(this.nombre);
                 tiendaTerminal.salirTienda(this.nombre);
             }
+            System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: "+this.nombre+" ESTA LIBRE");
         } catch (InterruptedException ex) {
             Logger.getLogger(Pasajero.class.getName()).log(Level.SEVERE, null, ex);
         }
