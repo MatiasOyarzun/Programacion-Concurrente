@@ -1,36 +1,30 @@
 package clases;
 
-/**
- *
- * @author OyarzunMatias 
- * Clase que modela un producto de la Tienda con su
- * id, cantidad del mismo en el supermercado (Stock) y precio.
+/*
+ * @author OyarzunMatias, Clase que modela un producto de la Tienda con su id, cantidad del mismo en el supermercado (Stock) y precio.
  */
 public class Producto {
 
-    /**
-     * Variables: 
-     * id: Codigo unico de producto
-     * stock: Cantidad del producto en el supermecado
-     * precio: Precio del producto
+    /*
+     *  Variables: 
+     *  • id: Codigo unico de producto
+     *  • stock: Cantidad del producto en el supermecado
+     *  • precio: Precio del producto
      */
     private int id;
     private int stock;
     private double precio;
-
-    /**
-     * Constructor
-     */
+    
+    //Constructor
     public Producto(int id, int stock, double precio) {
         this.id = id;
         this.stock = stock;
         this.precio = precio;
     }
 
-    /**
-     * Getters y setters
-     *
-     */
+    /*
+    *   Getters y Setters
+    */
     public int getId() {
         return this.id;
     }
@@ -56,16 +50,16 @@ public class Producto {
         this.precio = precio;
     }
 
-    /**
-     *  Resta uno al stock del producto
-     **/
+    /*
+    *   Resta uno al stock del producto
+    */
     public synchronized void restarStock() {
         this.stock -= 1;
     }
     
-    /**
+    /*
     *   Agrego una cantidad ingresada por parametro al stock del producto
-    **/
+    */
     public synchronized void agregarStock(int cantidad) {
         this.stock += cantidad;
     }

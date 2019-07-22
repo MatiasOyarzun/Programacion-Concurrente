@@ -1,27 +1,25 @@
 package clases;
 /**
- *
- * @author OyarzunMatias
- * Clase abstracta Persona para hacer buen uso de la programacion orientada a objetos
+ * @author OyarzunMatias, Clase abstracta Persona para hacer buen uso de la programacion orientada a objetos
  */
 public abstract class Persona {
     
-    /**
+    /*
     * Variables: 
-    * nombre: Nombre de la persona
-    * id: Codigo unico que permitira identificar a la persona
+    * • nombre: Nombre de la persona
+    * • id: Codigo unico que permitira identificar a la persona
     */
     protected String nombre;
     protected int id;
 
-    /**
+    /*
     * Constructor que solo usaran las clases hijas
     */
     public Persona(int id) {
         this.id = id;
     }
     
-    /**
+    /*
     * Constructor que solo usaran las clases hijas
     */
     public Persona(int id, String nombre) {
@@ -29,7 +27,7 @@ public abstract class Persona {
         this.nombre = nombre;
     }
     
-    /**
+    /*
     * Getters y Setters
     */
     public String getNombre() {
@@ -48,6 +46,9 @@ public abstract class Persona {
         this.id = id;
     }
     
+    /*
+    *   Metodos equals y toString redefinidos
+    */
     @Override
     public boolean equals(Object obj){
         return (this.toString().equals(obj.toString()));

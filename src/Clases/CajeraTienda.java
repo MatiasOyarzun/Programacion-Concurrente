@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package clases;
 
 import Utiles.SoutColores;
@@ -10,37 +5,47 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- *
- * @author OyarzunMatias
+ * @author OyarzunMatias, Clase que modela una Cajera, y su funcionamiento, implementa la interfaz de Runnable y extiende de Persona
  */
 public class CajeraTienda extends Persona implements Runnable{
     
+    /*
+    *   Variables: (y todas aquellas heredadas de la clase Persona, nombre e id)
+    *   • caja: representa la caja, en la que atendera la cajera
+    */
     private CajaTienda caja;
     
+    //Constructor
     public CajeraTienda(int id, CajaTienda caja){
         super(id);
         this.caja = caja;
     }
     
+    @Override
+    //Metodo redefinido que ejecutara el hilo de la cajera
+    public void run(){
+        while(true){
+            try {
+                //Obtiene un producto de la cinta de la caja, y lo procesa
+                Producto producto = this.caja.obtenerProductoCinta();
+                System.out.println("\t\t" + SoutColores.PURPLE +"La cajera: "+this.id+" esta PROCESANDO un producto...");
+                Thread.sleep(200);
+                //Resta stock del producto
+                producto.restarStock();
+            } catch (InterruptedException ex) {
+                Logger.getLogger(CajeraTienda.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
+    /*
+    *   Getters y Setters
+    */
     public void setCaja(CajaTienda caja){
         this.caja = caja;
     }
     
     public CajaTienda getCaja(){
         return this.caja;
-    }
-    
-    @Override
-    public void run(){
-        while(true){
-            try {
-                Producto producto = this.caja.obtenerProductoCinta();
-                System.out.println("\t\t" + SoutColores.PURPLE +"La cajera: "+this.id+" esta PROCESANDO un producto...");
-                Thread.sleep(200);
-                producto.restarStock();
-            } catch (InterruptedException ex) {
-                Logger.getLogger(CajeraTienda.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        }
     }
 }
