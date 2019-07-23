@@ -35,7 +35,7 @@ public class Main {
     //Creo array, con sus valores ya inicializado de los nombres de aerolineas
     private static final String[] NOMBRESAEROLINEAS = {"AEROLINEAS ARGENTINAS", "LAN", "LATAM"};
     //Constante que representa la cantidad de cajas que habra por tienda
-    private static final int CANTCAJASXTIENDA = 3;
+    private static final int CANTCAJASXTIENDA = 2;
     //Constante que representa la cantidad de puestos por terminal
     private static final int CANTPUESTOSTERMINAL = 7;
     //Creo array de Terminales del tamaño antes declarado
@@ -47,7 +47,7 @@ public class Main {
     //Creo Random para utilizarlo en caso necesario
     private static final Random RANDOM = new Random();
     //Constante que representa la cantidad de pasajeros que ingresaran al aeropuerto (debe ser multiplo de la carga del tren para que nunca se bloquee)
-    private static final int CANTPASAJEROS = CANTCARGATREN*(RANDOM.nextInt(10)+3);
+    private static final int CANTPASAJEROS = /*CANTCARGATREN*(RANDOM.nextInt(10)+3)*/15;
     
     
     /*

@@ -136,7 +136,7 @@ public class CargaTren {
     //Metodo que permite que el tren vuelva del recorrido, para iniciar uno nuevo
     public void volverViaje() {
         try {
-            this.bajar.acquire();
+            this.bajar.acquire(this.capacidadMaxTren);
             this.mutexCarga.acquire();
             System.out.println("\t\t\t\t\t\t\t" + SoutColores.BLUE_UNDERLINED + "La carga esta VACIA, el tren ya podra volver...");
             this.mutexCarga.release();
