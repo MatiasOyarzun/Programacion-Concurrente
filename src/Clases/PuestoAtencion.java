@@ -1,6 +1,5 @@
 package clases;
 
-import java.util.concurrent.PriorityBlockingQueue;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.Lock;
@@ -8,6 +7,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import Utiles.SoutColores;
+import java.util.ArrayList;
 
 /**
  *
@@ -18,7 +18,7 @@ public class PuestoAtencion {
     /*
     *   Variables:
     *   • MAXPUESTOATENCION: constante que indica la cantidad maxima que pueden haber en el puesto de atencion
-    *   • colaPrioridad: cola de prioridad que permite dar orden de llegada a la fila del puesto de atencion
+    *   • colaPrioridad: array list que permite seguir el orden de llegada a la fila del puesto de atencion
     *   • mutexPuesto: semaforo que garantiza la exclusion mutua de la seccion critica
     *   • lock: ReentrantLock que permite la exclusion mutua de la seccion critica
     *   • esperaHall: Condition que permite bloquear a los pasajeros, cuando ya no haya espacio en el puesto de atencion
@@ -27,14 +27,14 @@ public class PuestoAtencion {
     *   • guardia: Guardia que sera el encargado de controlar a los pasajeros, para que pasen a la fila
     *   • nombre: nombre del puesto de atencion
     */
-    private static final int MAXPUESTOATENCION = 2;
+    private static final int MAXPUESTOATENCION = 3;
     private int cantActualPuesto = 0, cantEspera = 0;
-    private final PriorityBlockingQueue<String> colaPrioridad;
+    private final ArrayList<String> colaPrioridad;
     private final Semaphore mutexPuesto = new Semaphore(1);
-    private final Lock lock = new ReentrantLock(true);
-    private final Condition esperaHall = this.lock.newCondition();
-    private final Condition esperaFila = this.lock.newCondition();
-    private final Condition guardiaPuesto = this.lock.newCondition();
+    private final Lock lock;
+    private final Condition esperaHall;
+    private final Condition esperaFila;
+    private final Condition guardiaPuesto;
     private Guardia guardia;
     private String nombre;
 
@@ -42,12 +42,16 @@ public class PuestoAtencion {
     public PuestoAtencion(String nombrePuesto, Guardia guardia) {
         this.nombre = nombrePuesto;
         this.guardia = guardia;
-        this.colaPrioridad = new PriorityBlockingQueue();
+        this.colaPrioridad = new ArrayList();
+        this.lock = new ReentrantLock(true);
+        this.esperaHall = this.lock.newCondition();
+        this.esperaFila = this.lock.newCondition();
+        this.guardiaPuesto = this.lock.newCondition();
     }
     
     /*
     *   Metodo que permite a un pasajero entrar a la fila del puesto de atencion, en caso de que no haya espacio, se queda esperando en el hall
-    *   luego es añadido a la cola de prioridad, para luego obtenerlos en un orden adecuado
+    *   luego es añadido a la cola de prioridad, para luego obtenerlos en un orden adecuado de llegada
     */
     public void entrarFilaPuesto(String nombrePasajero) {
         this.lock.lock();
@@ -84,11 +88,11 @@ public class PuestoAtencion {
         this.lock.lock();
         try {
             //Si no esta primero en la fila espera
-            while(!(this.colaPrioridad.peek().equals(nombrePasajero))){
+            while(!(this.colaPrioridad.get(0).equals(nombrePasajero))){
                 this.esperaFila.await();
             }
             //Lo remuevo de la fila
-            this.colaPrioridad.poll();
+            this.colaPrioridad.remove(0);
             this.mutexPuesto.acquire();
             System.out.println("\t\t\t\t\t"+SoutColores.RED+"El pasajero: "+nombrePasajero+" comenzo a realizar el CHECK-IN en el puesto de atencion: "+this.nombre+"...");
         } catch (InterruptedException ex) {
@@ -100,8 +104,11 @@ public class PuestoAtencion {
     public void salirPuestoAtencion(String nombrePasajero) {
         try {
             System.out.println("\t\t\t\t\t"+SoutColores.RED+"El pasajero: "+nombrePasajero+" termino de realizar el CHECK-IN en el puesto de atencion: "+this.nombre+"...");
+            //Salio alguien del puesto, por lo tanto disminuye
             this.cantActualPuesto--;
+            //Notifica a los que estan en la fila
             this.esperaFila.signal();
+            //Notifica al guardia, porque se libero espacio de la fila
             this.guardiaPuesto.signal();
             this.mutexPuesto.release();
         } finally {

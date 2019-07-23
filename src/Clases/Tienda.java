@@ -23,7 +23,7 @@ public class Tienda {
     *   • cantProductos: representa la cantidad de productos que hay en la tienda para vender
     *   • nombreTienda: representa el nombre que tendra la tienda de la terminal
     */
-    private static final int CANTMAXTIENDA = 5;
+    private static final int CANTMAXTIENDA = 7;
     private CajaTienda[] cajasTienda;
     private final Producto[] productos;
     private final Random random;
