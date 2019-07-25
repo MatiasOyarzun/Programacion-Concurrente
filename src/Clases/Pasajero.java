@@ -91,7 +91,7 @@ public class Pasajero extends Persona implements Runnable{
             Thread.sleep(100*(this.random.nextInt(5)+1));
             //Verifica si puede entrar al puesto de atencion de la terminal
             puesto.entrarPuestoAtencion(this.nombre);
-            Thread.sleep(100*(this.random.nextInt(3)+1));
+            Thread.sleep(100*(this.random.nextInt(3)+3));
             //Sale del puesto de atencion
             puesto.salirPuestoAtencion(this.nombre);
             Thread.sleep(100*(this.random.nextInt(5)+1));
@@ -126,6 +126,7 @@ public class Pasajero extends Persona implements Runnable{
                 Thread.sleep(500);
                 //Espera hasta que la cajera haya chequeado todos sus productos
                 caja.verificarCinta();
+                Thread.sleep(300);
                 //Sale de la caja
                 caja.salirCaja(this.nombre);
                 //Sale de la tienda

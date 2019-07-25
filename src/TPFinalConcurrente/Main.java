@@ -47,7 +47,7 @@ public class Main {
     //Creo Random para utilizarlo en caso necesario
     private static final Random RANDOM = new Random();
     //Constante que representa la cantidad de pasajeros que ingresaran al aeropuerto (debe ser multiplo de la carga del tren para que nunca se bloquee)
-    private static final int CANTPASAJEROS = /*CANTCARGATREN*(RANDOM.nextInt(10)+3)*/15;
+    private static final int CANTPASAJEROS = CANTCARGATREN*(RANDOM.nextInt(10)+3);
     
     
     /*
@@ -174,6 +174,7 @@ public class Main {
         pasoDia = new ControlDia(HORA, viajeBonito);
         Thread control = new Thread(pasoDia, "Simulador Tiempo");
         control.start();
+        System.out.println("---------------------------SE CREARAN: "+CANTPASAJEROS+" PASAJEROS-------------------------");
         crearPasajeros(viajeBonito);
     }
 }

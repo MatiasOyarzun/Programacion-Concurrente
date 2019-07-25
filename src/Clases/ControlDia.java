@@ -54,13 +54,14 @@ public class ControlDia implements Runnable {
                     } else {
                         //Comienza nuevo dia y se reponen productos en las tiendas de las terminales
                         if (this.hora.get() == HORARIO_COMIENZO_NUEVO_DIA) {
+                            this.hora.set(0);
                             System.out.println("\n\n--------DIA: " + i + " FINALIZADO!!.--------\n\n");
                             i++;
                             for (int j = 0; j < cantTerminales; j++) {
                                 tienda = terminales[j].getTienda();
                                 tienda.reponerProductos();
                             }
-                            this.hora.set(0);
+                            System.out.println("\n\n--------DIA: " + i + " COMIENZA!!.--------\n\n");
                         }
                     }
 

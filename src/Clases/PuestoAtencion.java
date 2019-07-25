@@ -27,7 +27,7 @@ public class PuestoAtencion {
     *   • guardia: Guardia que sera el encargado de controlar a los pasajeros, para que pasen a la fila
     *   • nombre: nombre del puesto de atencion
     */
-    private static final int MAXPUESTOATENCION = 3;
+    private static final int MAXPUESTOATENCION = 2;
     private int cantActualPuesto = 0, cantEspera = 0;
     private final ArrayList<String> colaPrioridad;
     private final Semaphore mutexPuesto = new Semaphore(1);
