@@ -1,4 +1,4 @@
-package clases;
+package Clases;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,7 +27,7 @@ public class Guardia extends Persona implements Runnable{
             try {
                 //Verifica puesto para indicar si puede pasar otro pasajero
                 this.puesto.verificarPuesto();
-                Thread.sleep(100);
+                Thread.sleep(200);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Guardia.class.getName()).log(Level.SEVERE, null, ex);
             }

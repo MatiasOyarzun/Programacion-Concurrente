@@ -1,4 +1,4 @@
-package clases;
+package Clases;
 
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.locks.Condition;
@@ -28,9 +28,9 @@ public class PuestoAtencion {
     *   • nombre: nombre del puesto de atencion
     */
     private static final int MAXPUESTOATENCION = 2;
-    private int cantActualPuesto = 0, cantEspera = 0;
+    private int cantActualPuesto, cantEspera;
     private final ArrayList<String> colaPrioridad;
-    private final Semaphore mutexPuesto = new Semaphore(1);
+    private final Semaphore mutexPuesto;
     private final Lock lock;
     private final Condition esperaHall;
     private final Condition esperaFila;
@@ -43,7 +43,10 @@ public class PuestoAtencion {
         this.nombre = nombrePuesto;
         this.guardia = guardia;
         this.colaPrioridad = new ArrayList();
+        this.cantActualPuesto = 0;
+        this.cantEspera = 0;
         this.lock = new ReentrantLock(true);
+        this.mutexPuesto = new Semaphore(1);
         this.esperaHall = this.lock.newCondition();
         this.esperaFila = this.lock.newCondition();
         this.guardiaPuesto = this.lock.newCondition();
@@ -112,6 +115,7 @@ public class PuestoAtencion {
             this.guardiaPuesto.signal();
             this.mutexPuesto.release();
         } finally {
+            //Libera lock tomado en "entrarPuestoAtencion"
             this.lock.unlock();
         }
     }

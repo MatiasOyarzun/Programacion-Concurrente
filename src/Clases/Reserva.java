@@ -1,4 +1,4 @@
-package clases;
+package Clases;
 
 /**
  * @author OyarzunMatias, Clase que modela una Reserva en el aeropuerto y su funcionalidad

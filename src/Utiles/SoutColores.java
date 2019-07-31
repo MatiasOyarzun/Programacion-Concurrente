@@ -2,7 +2,7 @@ package Utiles;
 
 /**
  *
- * @author OyarzunMatias
+ * @author OyarzunMatias, clase utilizada para permitir la salida por pantalla de colores.
  */
 public class SoutColores {
     

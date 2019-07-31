@@ -1,4 +1,4 @@
-package clases;
+package Clases;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -40,7 +40,7 @@ public class ControlDia implements Runnable {
         
         while (true) {
             try {
-                Thread.sleep(2500);
+                Thread.sleep(3000);
                 this.hora.addAndGet(1);
                 //Comienza horario atencion
                 if (this.hora.get() == HORARIO_INICIO_ATENCION) {

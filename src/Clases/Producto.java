@@ -1,4 +1,4 @@
-package clases;
+package Clases;
 
 /*
  * @author OyarzunMatias, Clase que modela un producto de la Tienda con su id, cantidad del mismo en el supermercado (Stock) y precio.

@@ -1,4 +1,4 @@
-package clases;
+package Clases;
 /**
  * @author OyarzunMatias, Clase abstracta Persona para hacer buen uso de la programacion orientada a objetos
  */

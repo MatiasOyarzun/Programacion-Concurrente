@@ -1,4 +1,4 @@
-package clases;
+package Clases;
 
 /**
  * @author OyarzunMatias, Clase que simula una Aerolinea y su funcionamiento

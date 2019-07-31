@@ -1,4 +1,4 @@
-package clases;
+package Clases;
 
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
@@ -19,6 +19,7 @@ public class CargaTren {
     *   • mutexCarga: semaforo que permite la exclusion mutua de las secciones criticas
     *   • cantPasajerosXTerminal: array que representa la cantidad de pasajeros que iran a cada terminal
     *   • cantTerminales: representa la cantidad de terminales que hay en el aeropuerto
+    *   • INICIO_ASCII: constante que representa el inicio de codigo ascii, al momento de parsear un int a char
     */
     private int capacidadMaxTren;
     private final Semaphore subir;
@@ -27,6 +28,7 @@ public class CargaTren {
     private final Semaphore mutexCarga;
     private final int[] cantPasajerosXTerminal;
     private int cantTerminales;
+    private static final int INICIO_ASCII = 65;
 
     //Constructor
     public CargaTren(int capacidad, int cantTerminales) {
@@ -75,11 +77,11 @@ public class CargaTren {
     
     //Metodo privado que aumenta la cantidad de pasajeros que bajaran en una terminal indicada
     private void verificarCarga(char letra) {
-        int cantTotal = this.cantTerminales + 65, i = 65;
+        int cantTotal = this.cantTerminales + INICIO_ASCII, i = INICIO_ASCII;
         boolean seguir = true;
         while (seguir && i < cantTotal) {
             if (letra == ((char) i)) {
-                this.cantPasajerosXTerminal[(i-65)]++;
+                this.cantPasajerosXTerminal[(i-INICIO_ASCII)]++;
                 seguir = false;
             }
             i++;
@@ -102,17 +104,17 @@ public class CargaTren {
     public void pasarTerminal(char letraTerminal, Semaphore[] semaforosTerminal) {
         try {
             this.mutexCarga.acquire();
-            int cantTotal = this.cantTerminales+65, i = 65;
+            int cantTotal = this.cantTerminales+INICIO_ASCII, i = INICIO_ASCII;
             int pasajerosTerminalActual;
             boolean seguir = true;
             while (seguir && i < cantTotal) {
                 if (letraTerminal == ((char) i)){
                     //Obtengo la cantidad de pasajeros que se quieren bajar en la terminal actual
-                    pasajerosTerminalActual = this.cantPasajerosXTerminal[(i-65)];
+                    pasajerosTerminalActual = this.cantPasajerosXTerminal[(i-INICIO_ASCII)];
                     //Libero la cantidad de permisos deseados segun la cantidad de pasajeros que se quieren bajar en esta terminal
-                    semaforosTerminal[(i-65)].release(pasajerosTerminalActual);
+                    semaforosTerminal[(i-INICIO_ASCII)].release(pasajerosTerminalActual);
                     //Seteo nuevamente en 0 la cantidad de pasajeros que se bajaran en esa terminal
-                    this.cantPasajerosXTerminal[(i-65)] = 0;
+                    this.cantPasajerosXTerminal[(i-INICIO_ASCII)] = 0;
                     seguir = false;
                 }
                 i++;

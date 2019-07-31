@@ -1,4 +1,4 @@
-package clases;
+package Clases;
 
 import Utiles.SoutColores;
 import java.util.ArrayList;
@@ -103,8 +103,9 @@ public class Pasajero extends Persona implements Runnable{
             cargaTren.bajarCargaTren(this.nombre);
             //Si tiene tiempo y si "verTienda" es true, vera la tienda
             if (((this.hora.get() + 2 <= horaVuelo) || (this.hora.get() > horaVuelo)) && (this.verTienda)) {
-                System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: "+this.nombre+" esta viendo la tienda de la terminal: "+terminal.getLetra()+"...");
-                Thread.sleep(2000*3);
+                System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: "+this.nombre+" ESTA VIENDO la tienda de la terminal: "+terminal.getLetra()+"...");
+                Thread.sleep(4000);
+                System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: "+this.nombre+" TERMINO DE VER la tienda de la terminal: "+terminal.getLetra()+"...");
             }else{
                 System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: "+this.nombre+" NO VA A ver, y por lo tanto TAMPOCO VA A comprar en la tienda de la terminal: "+terminal.getLetra()+" (ya sea por falta de tiempo, o porque no tenia ganas)");
             }
@@ -131,6 +132,10 @@ public class Pasajero extends Persona implements Runnable{
                 caja.salirCaja(this.nombre);
                 //Sale de la tienda
                 tiendaTerminal.salirTienda(this.nombre);
+            }else{
+                if(!this.verTienda){
+                    System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: "+this.nombre+" NO VA A comprar en la tienda de la terminal: "+terminal.getLetra()+" porque no tiene tiempo.");
+                }
             }
             //Espera a que sea la hora de la reserva de su vuelo
             terminal.esperarVuelo(this.nombre, this.reserva);

@@ -1,18 +1,20 @@
-package tpfinalconcurrente;
+package TPFinalConcurrente;
 
-import clases.CargaTren;
-import clases.Tienda;
-import clases.Terminal;
-import clases.CajaTienda;
-import clases.Guardia;
-import clases.PuestoAtencion;
-import clases.Tren;
-import clases.Aerolinea;
-import clases.Pasajero;
-import clases.Aeropuerto;
-import clases.CajeraTienda;
-import clases.ControlDia;
-import clases.Reserva;
+// Tuve que importar clase por clase, debido a que "import Clases.*" no me funcionaba
+import Clases.CargaTren;
+import Clases.Tienda;
+import Clases.Terminal;
+import Clases.CajaTienda;
+import Clases.Guardia;
+import Clases.PuestoAtencion;
+import Clases.Tren;
+import Clases.Aerolinea;
+import Clases.Pasajero;
+import Clases.Aeropuerto;
+import Clases.CajeraTienda;
+import Clases.ControlDia;
+import Clases.Reserva;
+
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.logging.Level;
@@ -139,7 +141,6 @@ public class Main {
             //Solo si ambos ("verTienda" y "comprarTienda") son verdaderos el pasajero ingresara a comprar.
             verTienda = RANDOM.nextBoolean();
             comprarTienda = RANDOM.nextBoolean();
-            System.out.println("Pasajero: "+(i+1)+" VER TIENDA: "+verTienda+" COMPRAR TIENDA: "+comprarTienda+" hora vuelo: "+nuevaReserva.getHoraVuelo());
             Pasajero nuevoPasajero = new Pasajero((i+1), "Pasajero: "+(i+1), nuevaReserva, viajeBonito, verTienda, comprarTienda, HORA);
             Thread pasajero = new Thread(nuevoPasajero, "Pasajero: "+(i+1));
             pasajero.start();

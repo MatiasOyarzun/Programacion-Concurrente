@@ -1,4 +1,4 @@
-package clases;
+package Clases;
 
 import java.util.Random;
 import Utiles.SoutColores;

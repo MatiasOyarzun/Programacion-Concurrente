@@ -1,4 +1,4 @@
-package clases;
+package Clases;
 
 import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
@@ -17,12 +17,14 @@ public class Tren implements Runnable {
     *   • nombreTren: representa el nombre del tren del aeropuerto
     *   • carga: representa los vagones del tren donde se subiran los pasajeros
     *   • semaforosTerminal: array de semaforos, para bloquear a los pasajeros mientra que todavia no hayan llegado a su terminal de destino
+    *   • INICIO_ASCII: constante para representar el inicio del codigo ascii, para representar las letras de las terminales, utilizado al parsear un int a char
     */
     private Terminal[] terminalesPorRecorrer;
     private int cantTerminales;
     private String nombreTren;
     private CargaTren carga;
     private final Semaphore[] semaforosTerminal;
+    private static final int INICIO_ASCII = 65;
 
     //Constructor
     public Tren(String nombre, Terminal[] terminales, CargaTren carga, int cantTerminales) {
@@ -67,11 +69,11 @@ public class Tren implements Runnable {
     
     //Metodo invocado por el pasajero para que pueda notificar a la terminal a la que debera ser trasladado por el tren, se queda bloqueado hasta que llega
     public void trasladarATerminal(char letraTerminal) {
-        int cantTotal = this.cantTerminales+65;
-        for (int i = 65; i < cantTotal; i++) {
+        int cantTotal = this.cantTerminales+INICIO_ASCII;
+        for (int i = INICIO_ASCII; i < cantTotal; i++) {
             if (letraTerminal == ((char) i)){
                 try {
-                    this.semaforosTerminal[(i-65)].acquire();
+                    this.semaforosTerminal[(i-INICIO_ASCII)].acquire();
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Tren.class.getName()).log(Level.SEVERE, null, ex);
                 }
