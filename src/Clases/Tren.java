@@ -53,11 +53,11 @@ public class Tren implements Runnable {
                     letraTerminal = this.terminalesPorRecorrer[i].getLetra();
                     System.out.println("\t\t\t\t\t\t\t" + SoutColores.BLUE_UNDERLINED + "El tren: " + this.nombreTren + " esta PASANDO por la terminal: " + letraTerminal);
                     this.carga.pasarTerminal(letraTerminal, this.semaforosTerminal);
-                    Thread.sleep(5000);
+                    Thread.sleep(2500);
                 }
                 //Permite volver del viaje al tren en cuanto se hayan bajado todos los pasajeros
                 this.carga.volverViaje();
-                Thread.sleep(2000*this.cantTerminales);
+                Thread.sleep(2500*this.cantTerminales);
                 System.out.println("\n\t\t\t\t\t\t\t" + SoutColores.BLUE_UNDERLINED + "El tren: " + this.nombreTren + " ya regreso al punto de origen...\n");
                 //Avisa que el tren ya llego al origen para partir un nuevo viaje
                 this.carga.llegoOrigen();

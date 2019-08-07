@@ -60,7 +60,7 @@ public class Terminal {
     //Metodo que permite a los pasajeros esperar por su vuelo en la terminal (mediante el uso de monitores)
     public synchronized void esperarVuelo(String nombrePasajero, Reserva reservaPasajero){
         //Mientras no sea la hora del viaje del pasajero, este debera esperar
-        while(this.hora.get() != reservaPasajero.getHoraVuelo()){
+        while(!(this.hora.compareAndSet(reservaPasajero.getHoraVuelo(), this.hora.addAndGet(0)))){
             try {
                 this.wait();
             } catch (InterruptedException ex) {

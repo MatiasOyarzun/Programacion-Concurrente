@@ -78,21 +78,25 @@ public class Pasajero extends Persona implements Runnable{
     //Metodo redefinido que invocaran los hilos de los pasajeros
     public void run(){
         try {
+            
             //Declaracion variables
             Tren trenInterno = this.aeropuerto.getTren();
             CargaTren cargaTren = trenInterno.getCarga();
-            PuestoAtencion puesto = this.aeropuerto.ingresarAeropuerto(this);
+            PuestoAtencion puesto;
             Terminal terminal = this.reserva.getTerminal();
             Tienda tiendaTerminal = terminal.getTienda();
             int horaVuelo = this.reserva.getHoraVuelo();
             Thread.sleep(100*(this.random.nextInt(4)+1));
-            //Verifica si puede entrar en la fila del aeropuerto
+            
+            //Ingresa al aeropuerto, y obtiene el puesto de atencion de la aerolinea (en base a la reserva del pasajero)
+            puesto = this.aeropuerto.ingresarAeropuerto(this);
+            //Verifica si puede entrar en la fila del puesto de atencion de la aerolinea
             puesto.entrarFilaPuesto(this.nombre);
             Thread.sleep(100*(this.random.nextInt(5)+1));
-            //Verifica si puede entrar al puesto de atencion de la terminal
+            //Verifica si puede entrar al puesto de atencion de la aerolinea
             puesto.entrarPuestoAtencion(this.nombre);
             Thread.sleep(100*(this.random.nextInt(3)+3));
-            //Sale del puesto de atencion
+            //Sale del puesto de atencion de la aerolinea
             puesto.salirPuestoAtencion(this.nombre);
             Thread.sleep(100*(this.random.nextInt(5)+1));
             //Subirse a la carga del tren (vagones)
@@ -102,15 +106,17 @@ public class Pasajero extends Persona implements Runnable{
             //Se baja del tren
             cargaTren.bajarCargaTren(this.nombre);
             //Si tiene tiempo y si "verTienda" es true, vera la tienda
-            if (((this.hora.get() + 2 <= horaVuelo) || (this.hora.get() > horaVuelo)) && (this.verTienda)) {
+            int horaActual = this.hora.addAndGet(0);
+            if (((horaActual + 2 <= horaVuelo) || (horaActual > horaVuelo)) && (this.verTienda)) {
                 System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: "+this.nombre+" ESTA VIENDO la tienda de la terminal: "+terminal.getLetra()+"...");
-                Thread.sleep(4000);
+                Thread.sleep(3000);
                 System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: "+this.nombre+" TERMINO DE VER la tienda de la terminal: "+terminal.getLetra()+"...");
             }else{
                 System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: "+this.nombre+" NO VA A ver, y por lo tanto TAMPOCO VA A comprar en la tienda de la terminal: "+terminal.getLetra()+" (ya sea por falta de tiempo, o porque no tenia ganas)");
             }
             //Si tiene tiempo y si "comprarTienda" y "verTienda" son true, comprara en la tienda
-            if (((this.hora.get() + 3 <= horaVuelo) || (this.hora.get() > horaVuelo)) && (this.comprarTienda && this.verTienda)) {
+            horaActual = this.hora.addAndGet(0);
+            if (((horaActual + 3 <= horaVuelo) || (horaActual > horaVuelo)) && (this.comprarTienda && this.verTienda)) {
                 //Espera en el caso de que la tienda este llena
                 tiendaTerminal.entrarTienda(this.nombre);
                 //Creo carro de productos

@@ -40,7 +40,7 @@ public class ControlDia implements Runnable {
         
         while (true) {
             try {
-                Thread.sleep(3000);
+                Thread.sleep(4000);
                 this.hora.addAndGet(1);
                 //Comienza horario atencion
                 if (this.hora.get() == HORARIO_INICIO_ATENCION) {
