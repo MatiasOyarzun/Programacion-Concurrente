@@ -35,8 +35,7 @@ public class ControlDia implements Runnable {
         //Declaracion variables
         int i = 1;
         Terminal[] terminales = this.aeropuerto.getTerminales();
-        int cantTerminales = terminales.length;
-        Tienda tienda;
+        Gerente gerenteTiendasAeropuerto = this.aeropuerto.getGerente();
         
         while (true) {
             try {
@@ -57,10 +56,6 @@ public class ControlDia implements Runnable {
                             this.hora.set(0);
                             System.out.println("\n\n--------DIA: " + i + " FINALIZADO!!.--------\n\n");
                             i++;
-                            for (int j = 0; j < cantTerminales; j++) {
-                                tienda = terminales[j].getTienda();
-                                tienda.reponerProductos();
-                            }
                             System.out.println("\n\n--------DIA: " + i + " COMIENZA!!.--------\n\n");
                         }
                     }
@@ -69,6 +64,7 @@ public class ControlDia implements Runnable {
                 System.out.println("\n\nCONTROL DEL DIA, ES LA HORA: " + this.hora.get() + "hs.\n\n");
                 //Notifica la hora a las terminales
                 this.notificarTerminalesHora(terminales);
+                gerenteTiendasAeropuerto.actualizarHora();
             } catch (InterruptedException ex) {
                 Logger.getLogger(ControlDia.class.getName()).log(Level.SEVERE, null, ex);
             }

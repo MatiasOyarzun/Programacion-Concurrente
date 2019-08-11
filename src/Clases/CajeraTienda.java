@@ -28,7 +28,8 @@ public class CajeraTienda extends Persona implements Runnable{
             try {
                 //Obtiene un producto de la cinta de la caja, y lo procesa
                 Producto producto = this.caja.obtenerProductoCinta();
-                System.out.println("\t\t" + SoutColores.PURPLE +"La cajera: "+this.id+" esta PROCESANDO un producto...");
+                Pasajero cliente = this.caja.getClienteActual();
+                System.out.println("\t\t" + SoutColores.PURPLE +"La cajera: "+this.id+" de la caja: "+ caja.getId() +" esta PROCESANDO un producto del cliente: "+ cliente.getNombre() +"...");
                 Thread.sleep(300);
                 //Resta stock del producto
                 producto.restarStock();

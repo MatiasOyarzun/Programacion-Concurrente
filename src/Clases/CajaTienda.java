@@ -31,6 +31,7 @@ public class CajaTienda {
     private final Condition esperaCajera;
     private final Condition esperaPasajero;
     private final ArrayList<Producto> cintaTransportadora;
+    private Pasajero clienteActual;
 
     //Constructor
     public CajaTienda(int id) {
@@ -41,31 +42,35 @@ public class CajaTienda {
         this.esperaCajera = this.lock.newCondition();
         this.esperaPasajero = this.lock.newCondition();
         this.cantActualCinta = 0;
+        this.clienteActual = null;
     }
     
     //Metodo que permite al pasajero esperar por la caja, cuando esta este ocupada, adquiriendo un permiso del semaforo "caja"
-    public void esperarCaja(String nombrePasajero) {
+    public void esperarCaja(Pasajero pasajero) {
         try {
             this.caja.acquire();
         } catch (InterruptedException ex) {
             Logger.getLogger(CajaTienda.class.getName()).log(Level.SEVERE, null, ex);
         }
-        System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: " + nombrePasajero + " ENTRO en la caja: " + this.id + "...");
+        this.clienteActual = pasajero;
+        System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: " + pasajero.getNombre() + " ENTRO en la caja: " + this.id + "...");
 
     }
 
     //Metodo que permite al pasajero liberar la caja, liberando un permiso del semaforo "caja", permitiendo que otros pasajeros, que se encuentren esperando ingresen
-    public void salirCaja(String nombrePasajero) {
-        System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: " + nombrePasajero + " SALIO de la caja: " + this.id + "...");
+    public void salirCaja(Pasajero pasajero) {
+        System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: " + pasajero.getNombre() + " SALIO de la caja: " + this.id + "...");
+        this.clienteActual = null;
         this.caja.release();
     }
     
     //Metodo que recibe el carrito del pasajero y pone los productos en la cinta transportadora, y luego cuando termina, le avisa a la cajera que ya puede comenzar a atender
-    public void ponerProductosCinta(ArrayList<Producto> carrito) {
+    public void ponerProductosCinta(ArrayList<Producto> carrito, Pasajero pasajero) {
         this.lock.lock();
         try {
             int longCarro = carrito.size();
             this.cantActualCinta = longCarro;
+            System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: " + pasajero.getNombre() + " ESTA PONIENDO productos en la cinta transportadora de la caja: " + this.id + "...");
             for (int i = 0; i < longCarro; i++) {
                 this.cintaTransportadora.add((carrito.get(i)));
             }
@@ -78,7 +83,7 @@ public class CajaTienda {
     }
     
     //Metodo que ejecuta el pasajero, para esperar a que la cinta transportadora sea vaciada (todos sus productos sean chequeados por la cajera)
-    public void verificarCinta() {
+    public void procesarCompra() {
         this.lock.lock();
         try {
             //Mientras que la cantidad actual de productos en la cinta sea mayor a cero, el pasajero espera
@@ -126,6 +131,10 @@ public class CajaTienda {
     */
     public void setId(int id) {
         this.id = id;
+    }
+    
+    public Pasajero getClienteActual(){
+        return this.clienteActual;
     }
 
     public int getId() {

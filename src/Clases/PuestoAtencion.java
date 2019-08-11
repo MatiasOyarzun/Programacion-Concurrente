@@ -30,7 +30,7 @@ public class PuestoAtencion {
      */
     private static final int MAXPUESTOATENCION = 2;
     private int cantActualPuesto, cantEspera;
-    private final ArrayList<String> colaPrioridad;
+    private final ArrayList<Pasajero> colaPrioridad;
     private final Semaphore mutexPuesto;
     private final Lock lock;
     private final Condition esperaHall;
@@ -57,28 +57,23 @@ public class PuestoAtencion {
     *   Metodo que permite a un pasajero entrar a la fila del puesto de atencion, en caso de que no haya espacio, se queda esperando en el hall
     *   luego es añadido a la cola de prioridad, para luego obtenerlos en un orden adecuado de llegada
      */
-    public void entrarFilaPuesto(String nombrePasajero) {
+    public void entrarFilaPuesto(Pasajero pasajero) {
         this.lock.lock();
         try {
             //Aumenta la cantidad de pasajeros que estan esperando
             this.cantEspera++;
-            //Si la cantidad de pasajeros que estan esperando es uno, se le avisa al guardia para que verifique si puede hacer pasar a alguien a la fila
-            if (this.cantEspera == 1) {
-                System.out.println("El pasajero: " + nombrePasajero + " aviso al guardia");
-                this.guardiaPuesto.signal();
-            }
             //Mientras que la fila este llena el pasajero esperara en el hall
             while (this.cantActualPuesto == MAXPUESTOATENCION) {
                 try {
-                    System.out.println("\t\t\t\t\t" + SoutColores.RED + "El pasajero: " + nombrePasajero + " esta ESPERANDO en el [HALL DE ESPERA] del puesto de atencion: " + this.nombre + "...");
+                    System.out.println("\t\t\t\t\t" + SoutColores.RED + "El pasajero: " + pasajero.getNombre() + " esta ESPERANDO en el [HALL DE ESPERA] del puesto de atencion: " + this.nombre + "...");
                     this.esperaHall.await();
                 } catch (InterruptedException ex) {
                     Logger.getLogger(PuestoAtencion.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             //Se desocupo la fila, entonces ingresa en la fila y se agrega en la cola de prioridad, por lo tanto, se disminuye uno porque no esta esperando mas, y se aumenta la cantidad que estan en el puesto
-            System.out.println("\t\t\t\t\t" + SoutColores.RED + "El pasajero: " + nombrePasajero + " COMENZO a hacer fila en el puesto de atencion: " + this.nombre + "...");
-            this.colaPrioridad.add(nombrePasajero);
+            System.out.println("\t\t\t\t\t" + SoutColores.RED + "El pasajero: " + pasajero.getNombre() + " COMENZO a hacer fila en el puesto de atencion: " + this.nombre + "...");
+            this.colaPrioridad.add(pasajero);
             this.cantEspera--;
             this.cantActualPuesto++;
         } finally {
@@ -89,26 +84,26 @@ public class PuestoAtencion {
     /*
     *   Metodo que permite a un pasajero entrar al puesto de atencion, siempre y cuando sea el primero en la cola de prioridad
      */
-    public void entrarPuestoAtencion(String nombrePasajero) {
+    public void entrarPuestoAtencion(Pasajero pasajero) {
         this.lock.lock();
         try {
             //Si no esta primero en la fila espera
-            while (!(this.colaPrioridad.get(0).equals(nombrePasajero))) {
+            while (!(this.colaPrioridad.get(0).equals(pasajero))) {
                 this.esperaFila.await();
             }
             //Lo remuevo de la fila
             this.colaPrioridad.remove(0);
             this.mutexPuesto.acquire();
-            System.out.println("\t\t\t\t\t" + SoutColores.RED + "El pasajero: " + nombrePasajero + " comenzo a realizar el CHECK-IN en el puesto de atencion: " + this.nombre + "...");
+            System.out.println("\t\t\t\t\t" + SoutColores.RED + "El pasajero: " + pasajero.getNombre() + " comenzo a realizar el CHECK-IN en el puesto de atencion: " + this.nombre + "...");
         } catch (InterruptedException ex) {
             Logger.getLogger(PuestoAtencion.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     //Metodo que permite a un pasajero salir del puesto de atencion, y notifica a los que estan en la fila para que puedan pasar y al guardia para que le de paso a alguien mas
-    public void salirPuestoAtencion(String nombrePasajero) {
+    public void salirPuestoAtencion(Pasajero pasajero) {
         try {
-            System.out.println("\t\t\t\t\t" + SoutColores.RED + "El pasajero: " + nombrePasajero + " termino de realizar el CHECK-IN en el puesto de atencion: " + this.nombre + "...");
+            System.out.println("\t\t\t\t\t" + SoutColores.RED + "El pasajero: " + pasajero.getNombre() + " termino de realizar el CHECK-IN en el puesto de atencion: " + this.nombre + "...");
             //Salio alguien del puesto, por lo tanto disminuye
             this.cantActualPuesto--;
             //Notifica a los que estan en la fila
@@ -125,7 +120,7 @@ public class PuestoAtencion {
     /*
     *   Metodo que permite al guardia verificar el puesto de atencion, para  ver si puede hacer pasar a algun pasajero del hall central
      */
-    public void verificarPuesto() {
+    public void hacerPasarPasajero() {
         this.lock.lock();
         try {
             //Mientras que no haya nadie esperando o este lleno el puesto, el guardia espera
@@ -136,7 +131,7 @@ public class PuestoAtencion {
                     Logger.getLogger(PuestoAtencion.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            System.out.println("\t\t" + SoutColores.PURPLE + "El guardia: " + this.guardia.getNombre() + " del puesto: " + this.nombre + " dejara pasar un pasajero...");
+            System.out.println("\t\t" + SoutColores.PURPLE + "El guardia: " + this.guardia.getNombre() + " del puesto: " + this.nombre + " hara pasar un pasajero...");
             this.esperaHall.signal();
         } finally {
             this.lock.unlock();

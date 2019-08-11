@@ -26,7 +26,7 @@ public class Guardia extends Persona implements Runnable{
         while(true){
             try {
                 //Verifica puesto para indicar si puede pasar otro pasajero
-                this.puesto.verificarPuesto();
+                this.puesto.hacerPasarPasajero();
                 Thread.sleep(200);
             } catch (InterruptedException ex) {
                 Logger.getLogger(Guardia.class.getName()).log(Level.SEVERE, null, ex);

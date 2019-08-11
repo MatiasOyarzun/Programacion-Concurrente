@@ -8,7 +8,7 @@ import Utiles.SoutColores;
 /*
  * @author OyarzunMatias, Clase que modela la carga o vagones del tren
  */
-public class CargaTren {
+public class ControlTren {
 
     /*
     *   Variables:
@@ -31,7 +31,7 @@ public class CargaTren {
     private static final int INICIO_ASCII = 65;
 
     //Constructor
-    public CargaTren(int capacidad, int cantTerminales) {
+    public ControlTren(int capacidad, int cantTerminales) {
         this.capacidadMaxTren = capacidad;
         this.subir = new Semaphore(this.capacidadMaxTren);
         this.bajar = new Semaphore(0);
@@ -61,17 +61,17 @@ public class CargaTren {
     }
 
     //Metodo que permite que un pasajero se pueda subir a la carga del tren
-    public void subirCargaTren(String nombrePasajero, char letraTerminal) {
+    public void subirATren(Pasajero pasajero, char letraTerminal) {
         try {
             this.subir.acquire();
             this.mutexCarga.acquire();
-            System.out.println("\t\t\t\t\t\t\t" + SoutColores.BLUE_UNDERLINED + "El pasajero: " + nombrePasajero + " SUBIO a la carga del tren...");
+            System.out.println("\t\t\t\t\t\t\t" + SoutColores.BLUE_UNDERLINED + "El pasajero: " + pasajero.getNombre() + " SUBIO a la carga del tren...");
             //Aumenta en uno la cantidad de pasajeros que se bajaran en esa terminal
             verificarCarga(letraTerminal);
             this.mutexCarga.release();
             this.arrancar.release();
         } catch (InterruptedException ex) {
-            Logger.getLogger(CargaTren.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ControlTren.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
     
@@ -89,14 +89,14 @@ public class CargaTren {
     }
 
     //Metodo que permite a un pasajero bajar del tren
-    public void bajarCargaTren(String nombrePasajero) {
+    public void bajarDeTren(Pasajero pasajero) {
         try {
             this.mutexCarga.acquire();
             this.bajar.release();
-            System.out.println("\t\t\t\t\t\t\t" + SoutColores.BLUE_UNDERLINED + "El pasajero: " + nombrePasajero + " BAJO de la carga del tren...");
+            System.out.println("\t\t\t\t\t\t\t" + SoutColores.BLUE_UNDERLINED + "El pasajero: " + pasajero.getNombre() + " BAJO de la carga del tren...");
             this.mutexCarga.release();
         } catch (InterruptedException ex) {
-            Logger.getLogger(CargaTren.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ControlTren.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -121,7 +121,7 @@ public class CargaTren {
             }
             this.mutexCarga.release();
         } catch (InterruptedException ex) {
-            Logger.getLogger(CargaTren.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ControlTren.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -131,7 +131,7 @@ public class CargaTren {
             this.arrancar.acquire(this.capacidadMaxTren);
             System.out.println("\t\t\t\t\t\t\t" + SoutColores.BLUE_UNDERLINED + "La carga esta LLENA, el tren puede partir viaje...");
         } catch (InterruptedException ex) {
-            Logger.getLogger(CargaTren.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ControlTren.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -143,7 +143,7 @@ public class CargaTren {
             System.out.println("\t\t\t\t\t\t\t" + SoutColores.BLUE_UNDERLINED + "La carga esta VACIA, el tren ya podra volver...");
             this.mutexCarga.release();
         } catch (InterruptedException ex) {
-            Logger.getLogger(CargaTren.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ControlTren.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -154,7 +154,7 @@ public class CargaTren {
             this.subir.release(this.capacidadMaxTren);
             this.mutexCarga.release();
         } catch (InterruptedException ex) {
-            Logger.getLogger(CargaTren.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(ControlTren.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

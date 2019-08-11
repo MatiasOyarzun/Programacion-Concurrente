@@ -58,7 +58,7 @@ public class Terminal {
     }
     
     //Metodo que permite a los pasajeros esperar por su vuelo en la terminal (mediante el uso de monitores)
-    public synchronized void esperarVuelo(String nombrePasajero, Reserva reservaPasajero){
+    public synchronized void esperarVuelo(Pasajero pasajero, Reserva reservaPasajero){
         //Mientras no sea la hora del viaje del pasajero, este debera esperar
         while(!(this.hora.compareAndSet(reservaPasajero.getHoraVuelo(), this.hora.addAndGet(0)))){
             try {
@@ -70,8 +70,8 @@ public class Terminal {
     }
     
     //Metodo que permite mostrar por pantalla que el pasajero ya se pudo subir a su vuelo
-    public void abordarVueloEmbarque(String nombrePasajero, Reserva reservaPasajero){
-        System.out.println("\t\t"+SoutColores.GREEN+" El pasajero: "+nombrePasajero+" esta abordando vuelo de la terminal: "+reservaPasajero.getTerminal().getLetra()+" en el embarque: "+reservaPasajero.getPuestoEmbarque()+", ya que esta por partir...");
+    public void abordarVueloEmbarque(Pasajero pasajero, Reserva reservaPasajero){
+        System.out.println("\t\t"+SoutColores.GREEN+" El pasajero: "+pasajero.getNombre()+" esta abordando vuelo de la terminal: "+reservaPasajero.getTerminal().getLetra()+" en el embarque: "+reservaPasajero.getPuestoEmbarque()+", ya que esta por partir...");
     }
     
     //Metodo que permite actualizar la hora de la terminal, notificando a todos los pasajeros que esten bloqueados, para que verifiquen si ya deben subir a su vuelo

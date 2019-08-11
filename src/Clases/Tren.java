@@ -22,12 +22,12 @@ public class Tren implements Runnable {
     private Terminal[] terminalesPorRecorrer;
     private int cantTerminales;
     private String nombreTren;
-    private CargaTren carga;
+    private ControlTren carga;
     private final Semaphore[] semaforosTerminal;
     private static final int INICIO_ASCII = 65;
 
     //Constructor
-    public Tren(String nombre, Terminal[] terminales, CargaTren carga, int cantTerminales) {
+    public Tren(String nombre, Terminal[] terminales, ControlTren carga, int cantTerminales) {
         this.nombreTren = nombre;
         this.terminalesPorRecorrer = terminales;
         this.carga = carga;
@@ -68,7 +68,7 @@ public class Tren implements Runnable {
     }
     
     //Metodo invocado por el pasajero para que pueda notificar a la terminal a la que debera ser trasladado por el tren, se queda bloqueado hasta que llega
-    public void trasladarATerminal(char letraTerminal) {
+    public void viajarATerminal(char letraTerminal) {
         int cantTotal = this.cantTerminales+INICIO_ASCII;
         for (int i = INICIO_ASCII; i < cantTotal; i++) {
             if (letraTerminal == ((char) i)){
@@ -92,11 +92,11 @@ public class Tren implements Runnable {
         this.cantTerminales = cantTerminales;
     }
 
-    public CargaTren getCarga() {
+    public ControlTren getCarga() {
         return this.carga;
     }
 
-    public void setCarga(CargaTren carga) {
+    public void setCarga(ControlTren carga) {
         this.carga = carga;
     }
 

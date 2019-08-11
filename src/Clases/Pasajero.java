@@ -81,7 +81,7 @@ public class Pasajero extends Persona implements Runnable{
             
             //Declaracion variables
             Tren trenInterno = this.aeropuerto.getTren();
-            CargaTren cargaTren = trenInterno.getCarga();
+            ControlTren controlTren = trenInterno.getCarga();
             PuestoAtencion puesto;
             Terminal terminal = this.reserva.getTerminal();
             Tienda tiendaTerminal = terminal.getTienda();
@@ -91,23 +91,24 @@ public class Pasajero extends Persona implements Runnable{
             //Ingresa al aeropuerto, y obtiene el puesto de atencion de la aerolinea (en base a la reserva del pasajero)
             puesto = this.aeropuerto.ingresarAeropuerto(this);
             //Verifica si puede entrar en la fila del puesto de atencion de la aerolinea
-            puesto.entrarFilaPuesto(this.nombre);
+            puesto.entrarFilaPuesto(this);
             Thread.sleep(100*(this.random.nextInt(5)+1));
             //Verifica si puede entrar al puesto de atencion de la aerolinea
-            puesto.entrarPuestoAtencion(this.nombre);
+            puesto.entrarPuestoAtencion(this);
             Thread.sleep(100*(this.random.nextInt(3)+3));
             //Sale del puesto de atencion de la aerolinea
-            puesto.salirPuestoAtencion(this.nombre);
+            puesto.salirPuestoAtencion(this);
             Thread.sleep(100*(this.random.nextInt(5)+1));
             //Subirse a la carga del tren (vagones)
-            cargaTren.subirCargaTren(this.nombre, (this.reserva.getTerminal().getLetra()));
+            controlTren.subirATren(this, (this.reserva.getTerminal().getLetra()));
             //Espera hasta que llegue a su terminal
-            trenInterno.trasladarATerminal(this.reserva.getTerminal().getLetra());
+            trenInterno.viajarATerminal(this.reserva.getTerminal().getLetra());
             //Se baja del tren
-            cargaTren.bajarCargaTren(this.nombre);
+            controlTren.bajarDeTren(this);
             //Si tiene tiempo y si "verTienda" es true, vera la tienda
             int horaActual = this.hora.addAndGet(0);
             if (((horaActual + 2 <= horaVuelo) || (horaActual > horaVuelo)) && (this.verTienda)) {
+                //Simula tiempo que mira la tienda
                 System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: "+this.nombre+" ESTA VIENDO la tienda de la terminal: "+terminal.getLetra()+"...");
                 Thread.sleep(3000);
                 System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: "+this.nombre+" TERMINO DE VER la tienda de la terminal: "+terminal.getLetra()+"...");
@@ -118,35 +119,35 @@ public class Pasajero extends Persona implements Runnable{
             horaActual = this.hora.addAndGet(0);
             if (((horaActual + 3 <= horaVuelo) || (horaActual > horaVuelo)) && (this.comprarTienda && this.verTienda)) {
                 //Espera en el caso de que la tienda este llena
-                tiendaTerminal.entrarTienda(this.nombre);
+                tiendaTerminal.entrarTienda(this);
                 //Creo carro de productos
                 ArrayList<Producto> carro = new ArrayList<>();
                 //Elije productos a comprar de la tienda
-                tiendaTerminal.seleccionarProductos(this.nombre, carro);
+                tiendaTerminal.seleccionarProductos(this, carro);
                 Thread.sleep(500);
                 //Va a una caja de la tienda
-                CajaTienda caja = tiendaTerminal.irCaja(this.nombre);
+                CajaTienda caja = tiendaTerminal.irCaja(this);
                 //Espera si la caja esta ocupada
-                caja.esperarCaja(this.nombre);
+                caja.esperarCaja(this);
                 //Pone los productos en la cinta transportadora de la caja
-                caja.ponerProductosCinta(carro);
+                caja.ponerProductosCinta(carro, this);
                 Thread.sleep(500);
                 //Espera hasta que la cajera haya chequeado todos sus productos
-                caja.verificarCinta();
+                caja.procesarCompra();
                 Thread.sleep(300);
                 //Sale de la caja
-                caja.salirCaja(this.nombre);
+                caja.salirCaja(this);
                 //Sale de la tienda
-                tiendaTerminal.salirTienda(this.nombre);
+                tiendaTerminal.salirTienda(this);
             }else{
-                if(!this.verTienda){
+                if(this.verTienda){
                     System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: "+this.nombre+" NO VA A comprar en la tienda de la terminal: "+terminal.getLetra()+" porque no tiene tiempo.");
                 }
             }
             //Espera a que sea la hora de la reserva de su vuelo
-            terminal.esperarVuelo(this.nombre, this.reserva);
+            terminal.esperarVuelo(this, this.reserva);
             //Se sube a su vuelo
-            terminal.abordarVueloEmbarque(this.nombre, this.reserva);
+            terminal.abordarVueloEmbarque(this, this.reserva);
         } catch (InterruptedException ex) {
             Logger.getLogger(Pasajero.class.getName()).log(Level.SEVERE, null, ex);
         }

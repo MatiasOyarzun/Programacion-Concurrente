@@ -23,18 +23,20 @@ public class Aeropuerto {
     private Aerolinea[] aerolineas;
     private Terminal[] terminales;
     private Tren tren;
+    private Gerente gerente;
     private String nombreAeropuerto;
     private boolean esHoraAtencion;
     private final Random random;
     
     //Constructor
-    public Aeropuerto(String nombre, Terminal[] terminales, Aerolinea[] aerolineas, Tren tren){
+    public Aeropuerto(String nombre, Terminal[] terminales, Aerolinea[] aerolineas, Tren tren, Gerente gerente){
         this.nombreAeropuerto = nombre;
         this.terminales = terminales;
         this.aerolineas = aerolineas;
         this.tren = tren;
         this.esHoraAtencion = false;
         this.random = new Random();
+        this.gerente = gerente;
     }
     
     /*
@@ -80,6 +82,14 @@ public class Aeropuerto {
     /*
     *   Getters y Setters
     */
+    public Gerente getGerente(){
+        return this.gerente;
+    }
+    
+    public void setGerente(Gerente gerente){
+        this.gerente = gerente;
+    }
+    
     public Aerolinea[] getAerolineas() {
         return aerolineas;
     }
