@@ -1,7 +1,7 @@
 package TPFinalConcurrente;
 
 // Tuve que importar clase por clase, debido a que "import Clases.*" no me funcionaba
-import Clases.CargaTren;
+import Clases.ControlTren;
 import Clases.Tienda;
 import Clases.Terminal;
 import Clases.CajaTienda;
@@ -13,6 +13,7 @@ import Clases.Pasajero;
 import Clases.Aeropuerto;
 import Clases.CajeraTienda;
 import Clases.ControlDia;
+import Clases.Gerente;
 import Clases.Reserva;
 
 import java.util.Random;
@@ -40,12 +41,14 @@ public class Main {
     private static final int CANTCAJASXTIENDA = 2;
     //Constante que representa la cantidad de puestos por terminal
     private static final int CANTPUESTOSTERMINAL = 7;
+    //Creo array de Tiendas con el tamaño en base a la cantidad de terminales (ya que hay una por terminal)
+    private static final Tienda[] TIENDAS = new Tienda[CANTTERMINALES];
     //Creo array de Terminales del tamaño antes declarado
     private static final Terminal[] TERMINALES = new Terminal[CANTTERMINALES];
     //Creo array, con sus valores ya inicializados de los nombres de las terminales
     private static final char[] LETRASTERMINALES = {'A', 'B', 'C'};
     //Creo AtomicInteger que representara el paso de las horas durante los dias
-    private static final AtomicInteger HORA = new AtomicInteger(0);
+    private static final AtomicInteger HORA = new AtomicInteger(4);
     //Creo Random para utilizarlo en caso necesario
     private static final Random RANDOM = new Random();
     //Constante que representa la cantidad de pasajeros que ingresaran al aeropuerto (debe ser multiplo de la carga del tren para que nunca se bloquee)
@@ -69,6 +72,7 @@ public class Main {
                 numPuesto++;
             }
             nuevaTienda = crearTienda(LETRASTERMINALES[i]);
+            TIENDAS[i] = nuevaTienda;
             TERMINALES[i] = new Terminal(LETRASTERMINALES[i], puestosTerminal, nuevaTienda, HORA);
         }
     }
@@ -160,18 +164,21 @@ public class Main {
     public static void main(String[] args) {
         
         //Declaracion de variables
-        CargaTren carga;
+        ControlTren carga;
         Tren trenInterno;
         Aeropuerto viajeBonito;
         ControlDia pasoDia;
         
         crearTerminales();
         crearAerolineas();
-        carga = new CargaTren(CANTCARGATREN, CANTTERMINALES);
+        carga = new ControlTren(CANTCARGATREN, CANTTERMINALES);
         trenInterno = new Tren("Tren Interno", TERMINALES, carga, CANTTERMINALES);
         Thread tren = new Thread(trenInterno, "Tren Interno");
         tren.start();
-        viajeBonito = new Aeropuerto("Viaje Bonito", TERMINALES, AEROLINEAS, trenInterno);
+        Gerente gerente = new Gerente(1, "Gerente 1", TIENDAS, HORA);
+        Thread hiloGerente = new Thread(gerente, "Gerente 1");
+        hiloGerente.start();
+        viajeBonito = new Aeropuerto("Viaje Bonito", TERMINALES, AEROLINEAS, trenInterno, gerente);
         pasoDia = new ControlDia(HORA, viajeBonito);
         Thread control = new Thread(pasoDia, "Simulador Tiempo");
         control.start();
