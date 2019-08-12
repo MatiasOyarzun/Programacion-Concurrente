@@ -73,9 +73,9 @@ public class Tienda {
         return this.cajasTienda;
     }
 
-    //Metodo que permite verificar si un pasajero puede ingresar en la tienda o no, siempre y cuando haya los permisos necesarios
+    //Metodo que permite verificar si un pasajero puede ingresar en la tienda o no, siempre y cuando haya espacio disponible
     public synchronized void entrarTienda(Pasajero pasajero) {
-
+        //Si no hay espacio, el pasajero debera esperar
         while (this.cantActualTienda == CANTMAXTIENDA) {
             System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: " + pasajero.getNombre() + " esta ESPERANDO para entrar a la tienda: " + this.nombreTienda + "...");
             try {
@@ -84,17 +84,18 @@ public class Tienda {
                 Logger.getLogger(Tienda.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+        //Pudo pasar a la tienda, aumenta en uno la cantidad de pasajeros en la tienda
         this.cantActualTienda++;
         System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: " + pasajero.getNombre() + " esta ENTRANDO a la tienda: " + this.nombreTienda + "...");
     }
 
     //Metodo que permite que un pasajero seleccione los productos que desea comprar, siempre y cuando tengan stock
     public synchronized void seleccionarProductos(Pasajero pasajero, ArrayList<Producto> carroCompra) {
+        
         //Declaracion variables
         int cantProductosRandom = (this.random.nextInt(6) + 5);
         int prodRandom;
         Producto producto;
-
         System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: " + pasajero.getNombre() + " esta LLENANDO su carro de compras en la tienda: " + this.nombreTienda + "...");
 
         //Repetitiva que permite seleccionar a productos de la tienda

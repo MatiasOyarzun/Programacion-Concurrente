@@ -55,7 +55,7 @@ public class Gerente extends Persona implements Runnable{
     
     //Metodo que permite verificar si el gerente ya puede reponer productos en las tiendas del aeropuerto
     private synchronized void reponerProductosTiendas(){
-        while (!this.hora.compareAndSet(HORA_REPONER, this.hora.addAndGet(0))) {
+        while (!(this.hora.compareAndSet(HORA_REPONER, this.hora.addAndGet(0)))) {
             try {
                 this.wait();
             } catch (InterruptedException ex) {

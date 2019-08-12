@@ -1,5 +1,7 @@
 package Clases;
 
+import java.util.Objects;
+
 /**
  * @author OyarzunMatias, Clase que simula una Aerolinea y su funcionamiento
  */
@@ -42,8 +44,21 @@ public class Aerolinea {
     *   Metodos redefinidos, equals y toString.
     */
     @Override
-    public boolean equals(Object obj){
-        return (this.toString().equals(obj.toString()));
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Aerolinea other = (Aerolinea) obj;
+        if (!Objects.equals(this.nombreAerolinea, other.nombreAerolinea)) {
+            return false;
+        }
+        return true;
     }
     
     @Override

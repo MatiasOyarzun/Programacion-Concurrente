@@ -65,7 +65,7 @@ public class ControlTren {
         try {
             this.subir.acquire();
             this.mutexCarga.acquire();
-            System.out.println("\t\t\t\t\t\t\t" + SoutColores.BLUE_UNDERLINED + "El pasajero: " + pasajero.getNombre() + " SUBIO a la carga del tren...");
+            System.out.println("\t\t\t\t\t\t\t" + SoutColores.BLUE_UNDERLINED + "El pasajero: " + pasajero.getNombre() + " se SUBIO al tren...");
             //Aumenta en uno la cantidad de pasajeros que se bajaran en esa terminal
             verificarCarga(letraTerminal);
             this.mutexCarga.release();
@@ -93,7 +93,7 @@ public class ControlTren {
         try {
             this.mutexCarga.acquire();
             this.bajar.release();
-            System.out.println("\t\t\t\t\t\t\t" + SoutColores.BLUE_UNDERLINED + "El pasajero: " + pasajero.getNombre() + " BAJO de la carga del tren...");
+            System.out.println("\t\t\t\t\t\t\t" + SoutColores.BLUE_UNDERLINED + "El pasajero: " + pasajero.getNombre() + " BAJO del tren...");
             this.mutexCarga.release();
         } catch (InterruptedException ex) {
             Logger.getLogger(ControlTren.class.getName()).log(Level.SEVERE, null, ex);
@@ -129,7 +129,7 @@ public class ControlTren {
     public void partirViaje() {
         try {
             this.arrancar.acquire(this.capacidadMaxTren);
-            System.out.println("\t\t\t\t\t\t\t" + SoutColores.BLUE_UNDERLINED + "La carga esta LLENA, el tren puede partir viaje...");
+            System.out.println("\t\t\t\t\t\t\t" + SoutColores.BLUE_UNDERLINED + "El tren esta LLENO, puede partir viaje...");
         } catch (InterruptedException ex) {
             Logger.getLogger(ControlTren.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -140,7 +140,7 @@ public class ControlTren {
         try {
             this.bajar.acquire(this.capacidadMaxTren);
             this.mutexCarga.acquire();
-            System.out.println("\t\t\t\t\t\t\t" + SoutColores.BLUE_UNDERLINED + "La carga esta VACIA, el tren ya podra volver...");
+            System.out.println("\t\t\t\t\t\t\t" + SoutColores.BLUE_UNDERLINED + "El tren esta VACIO, ya podra volver...");
             this.mutexCarga.release();
         } catch (InterruptedException ex) {
             Logger.getLogger(ControlTren.class.getName()).log(Level.SEVERE, null, ex);

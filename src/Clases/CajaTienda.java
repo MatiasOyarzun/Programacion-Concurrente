@@ -23,6 +23,7 @@ public class CajaTienda {
     *   • esperaCajera: Condition, que permite bloquear a la cajera en cuanto no hayan items en la cinta
     *   • esperaPasajero: Condition, que permite bloquear al pasajero mientras que hayan items en la cinta
     *   • cintaTransportadora: ArrayList que simula la cinta, para almacenar los productos en esta
+    *   • clienteActual: variable pasajero, que representa el cliente actual de la caja
     */
     private int id;
     private final Semaphore caja;
