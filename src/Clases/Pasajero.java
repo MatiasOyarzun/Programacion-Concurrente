@@ -140,7 +140,7 @@ public class Pasajero extends Persona implements Runnable{
                 //Sale de la tienda
                 tiendaTerminal.salirTienda(this);
             }else{
-                if(this.verTienda){
+                if(this.verTienda && this.comprarTienda){
                     System.out.println("\t\t\t" + SoutColores.PURPLE + "El pasajero: "+this.nombre+" NO VA A comprar en la tienda de la terminal: "+terminal.getLetra()+" porque no tiene tiempo.");
                 }
             }
