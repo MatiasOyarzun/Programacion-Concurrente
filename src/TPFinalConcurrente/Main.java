@@ -145,7 +145,6 @@ public class Main {
             verTienda = RANDOM.nextBoolean();
             comprarTienda = RANDOM.nextBoolean();
             Pasajero nuevoPasajero = new Pasajero((i + 1), "Pasajero: " + (i + 1), nuevaReserva, viajeBonito, verTienda, comprarTienda, HORA);
-            System.out.println("Pasajero: "+(i+1)+" verTienda: "+verTienda+" comprarTienda: "+comprarTienda+" Hora vuelo: "+horaViaje);
             Thread pasajero = new Thread(nuevoPasajero, "Pasajero: " + (i + 1));
             pasajero.start();
             try {
