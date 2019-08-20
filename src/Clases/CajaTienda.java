@@ -47,7 +47,7 @@ public class CajaTienda {
     }
     
     //Metodo que permite al pasajero esperar por la caja, cuando esta este ocupada, adquiriendo un permiso del semaforo "caja"
-    public void esperarCaja(Pasajero pasajero) {
+    public void hacerFila(Pasajero pasajero) {
         try {
             this.caja.acquire();
         } catch (InterruptedException ex) {

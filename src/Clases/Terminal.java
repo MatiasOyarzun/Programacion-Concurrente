@@ -75,7 +75,7 @@ public class Terminal {
     }
     
     //Metodo que permite actualizar la hora de la terminal, notificando a todos los pasajeros que esten bloqueados, para que verifiquen si ya deben subir a su vuelo
-    public synchronized void actualizarHoraTerminal(){
+    public synchronized void pasarHora(){
         this.notifyAll();
     }
 }

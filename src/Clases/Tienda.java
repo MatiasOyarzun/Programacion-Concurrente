@@ -115,7 +115,7 @@ public class Tienda {
     }
 
     //Metodo que permite que un pasajero vaya a una caja aleatoria de la tienda
-    public CajaTienda irCaja(Pasajero pasajero) {
+    public CajaTienda obtenerCaja(Pasajero pasajero) {
         int cantCajas = this.cajasTienda.length;
         int cajaRandom = this.random.nextInt(cantCajas);
         CajaTienda caja = this.cajasTienda[cajaRandom];

@@ -7,7 +7,7 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author OyarzunMatias, Clase que modela un gerente del aeropuerto que repondra productos de las tiendas de esta, implementa la interfaz Runnable y hereda de Persona.
+ * @author OyarzunMatias, Clase que modela un gerente del aeropuerto que repondra productos de todas las tiendas, implementa la interfaz Runnable y hereda de Persona.
  */
 public class Gerente extends Persona implements Runnable{
     
@@ -44,6 +44,7 @@ public class Gerente extends Persona implements Runnable{
     //Metodo redefinido que ejecutara el hilo del gerente
     public void run(){
         while(true){
+            //Verifica si puede reponer productos de las tiendas
             this.reponerProductosTiendas();
             try {
                 Thread.sleep(5000);
@@ -70,7 +71,7 @@ public class Gerente extends Persona implements Runnable{
     }
     
     //Metodo que sirve para que el gerente verifique la hora, para ver si ya es necesario reponer productos
-    public synchronized void actualizarHora(){
+    public synchronized void notificarCambioHora(){
         this.notify();
     }
 }

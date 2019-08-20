@@ -126,9 +126,9 @@ public class Pasajero extends Persona implements Runnable{
                 tiendaTerminal.seleccionarProductos(this, carro);
                 Thread.sleep(500);
                 //Va a una caja de la tienda
-                CajaTienda caja = tiendaTerminal.irCaja(this);
+                CajaTienda caja = tiendaTerminal.obtenerCaja(this);
                 //Espera si la caja esta ocupada
-                caja.esperarCaja(this);
+                caja.hacerFila(this);
                 //Pone los productos en la cinta transportadora de la caja
                 caja.ponerProductosCinta(carro, this);
                 Thread.sleep(500);

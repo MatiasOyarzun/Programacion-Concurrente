@@ -41,6 +41,7 @@ public class ControlDia implements Runnable {
             try {
                 Thread.sleep(4000);
                 this.hora.addAndGet(1);
+                System.out.println("\n\nCONTROL DEL DIA, ES LA HORA: " + this.hora.get() + "hs.\n\n");
                 //Comienza horario atencion
                 if (this.hora.get() == HORARIO_INICIO_ATENCION) {
                     this.aeropuerto.comenzarHorarioAtencion();
@@ -51,7 +52,7 @@ public class ControlDia implements Runnable {
                         this.aeropuerto.terminarHorarioAtencion();
                         Thread.sleep(200);
                     } else {
-                        //Comienza nuevo dia y se reponen productos en las tiendas de las terminales
+                        //Comienza nuevo dia
                         if (this.hora.get() == HORARIO_COMIENZO_NUEVO_DIA) {
                             this.hora.set(0);
                             System.out.println("\n\n--------DIA: " + i + " FINALIZADO!!.--------\n\n");
@@ -61,10 +62,10 @@ public class ControlDia implements Runnable {
                     }
 
                 }
-                System.out.println("\n\nCONTROL DEL DIA, ES LA HORA: " + this.hora.get() + "hs.\n\n");
                 //Notifica la hora a las terminales
                 this.notificarTerminalesHora(terminales);
-                gerenteTiendasAeropuerto.actualizarHora();
+                //Notifica cambio de hora al gerente
+                gerenteTiendasAeropuerto.notificarCambioHora();
             } catch (InterruptedException ex) {
                 Logger.getLogger(ControlDia.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -75,7 +76,7 @@ public class ControlDia implements Runnable {
     private void notificarTerminalesHora(Terminal[] terminales){
         int cantTerminales = terminales.length;
         for (int i = 0; i < cantTerminales; i++) {
-            terminales[i].actualizarHoraTerminal();
+            terminales[i].pasarHora();
         }
     }
 }

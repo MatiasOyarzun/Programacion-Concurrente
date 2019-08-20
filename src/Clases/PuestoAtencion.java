@@ -31,7 +31,7 @@ public class PuestoAtencion {
     private static final int MAXPUESTOATENCION = 2;
     private int cantActualPuesto, cantEspera;
     private final ArrayList<Pasajero> colaPrioridad;
-    private final Semaphore mutexPuesto;
+    //private final Semaphore mutexPuesto;
     private final Lock lock;
     private final Condition esperaHall;
     private final Condition esperaFila;
@@ -47,7 +47,7 @@ public class PuestoAtencion {
         this.cantActualPuesto = 0;
         this.cantEspera = 0;
         this.lock = new ReentrantLock(true);
-        this.mutexPuesto = new Semaphore(1);
+        //this.mutexPuesto = new Semaphore(1);
         this.esperaHall = this.lock.newCondition();
         this.esperaFila = this.lock.newCondition();
         this.guardiaPuesto = this.lock.newCondition();
@@ -91,26 +91,29 @@ public class PuestoAtencion {
             while (!(this.colaPrioridad.get(0).equals(pasajero))) {
                 this.esperaFila.await();
             }
-            //Lo remuevo de la fila
-            this.colaPrioridad.remove(0);
-            this.mutexPuesto.acquire();
+            //this.mutexPuesto.acquire();
             System.out.println("\t\t\t\t\t" + SoutColores.RED + "El pasajero: " + pasajero.getNombre() + " comenzo a realizar el CHECK-IN en el puesto de atencion: " + this.nombre + "...");
         } catch (InterruptedException ex) {
             Logger.getLogger(PuestoAtencion.class.getName()).log(Level.SEVERE, null, ex);
+        }finally{
+            this.lock.unlock();
         }
     }
 
     //Metodo que permite a un pasajero salir del puesto de atencion, y notifica a los que estan en la fila para que puedan pasar y al guardia para que le de paso a alguien mas
     public void salirPuestoAtencion(Pasajero pasajero) {
+        this.lock.lock();
         try {
             System.out.println("\t\t\t\t\t" + SoutColores.RED + "El pasajero: " + pasajero.getNombre() + " termino de realizar el CHECK-IN en el puesto de atencion: " + this.nombre + "...");
+            //Lo remuevo de la fila
+            this.colaPrioridad.remove(0);
             //Salio alguien del puesto, por lo tanto disminuye
             this.cantActualPuesto--;
             //Notifica a los que estan en la fila
             this.esperaFila.signal();
             //Notifica al guardia, porque se libero espacio de la fila
             this.guardiaPuesto.signal();
-            this.mutexPuesto.release();
+            //this.mutexPuesto.release();
         } finally {
             //Libera lock tomado en "entrarPuestoAtencion"
             this.lock.unlock();
@@ -124,6 +127,12 @@ public class PuestoAtencion {
         this.lock.lock();
         try {
             //Mientras que no haya nadie esperando o este lleno el puesto, el guardia espera
+            /*  
+            *   CONSIDERACION A TENER EN CUENTA:
+            *   Si cantidad de pasajeros en espera es 0, entonces el guardia no hace pasar a nadie, porque no hay nadie esperando justamente.
+            *   Si la cantidad de pasajeros en el puesto/fila es igual a la cantidad maxima, entonces no puede dejar pasar a nadie, porque justamente ya esta lleno.
+            *   Solo puede hacer pasar a pasajeros, cuando el puesto no este lleno y ademas alla pasajeros en espera.
+            */
             while (this.cantEspera == 0 || this.cantActualPuesto == MAXPUESTOATENCION) {
                 try {
                     this.guardiaPuesto.await();
